@@ -976,6 +976,40 @@ if (contactForm) {
   });
 }
 
+// ===== Theme toggle (dark/light) =====
+const themeBtn = document.getElementById("themeToggle");
+const THEME_KEY = "necklas_theme_v1";
+
+function setTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+
+  // atualiza meta theme-color (barra do mobile)
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  if (metaTheme) metaTheme.setAttribute("content", theme === "light" ? "#f6f7fb" : "#0b1220");
+
+  // UI do botão
+  if (themeBtn) themeBtn.setAttribute("aria-pressed", String(theme === "light"));
+}
+
+function getPreferredTheme() {
+  const saved = localStorage.getItem(THEME_KEY);
+  if (saved === "light" || saved === "dark") return saved;
+
+  const prefersLight = window.matchMedia?.("(prefers-color-scheme: light)")?.matches;
+  return prefersLight ? "light" : "dark";
+}
+
+// init
+setTheme(getPreferredTheme());
+
+// click
+themeBtn?.addEventListener("click", () => {
+  const current = document.documentElement.getAttribute("data-theme") || "dark";
+  const next = current === "dark" ? "light" : "dark";
+  localStorage.setItem(THEME_KEY, next);
+  setTheme(next);
+});
+
 // =====================
 // Init
 // =====================
