@@ -123,6 +123,30 @@ h1{ margin: 10px 0 8px; font-size: clamp(32px, 4vw, 46px); line-height: 1.15; }
 .links a{ color: var(--muted); text-decoration:none; }
 .links a:hover{ color: var(--text); text-decoration: underline; }
 
+/* HERO (direita) com recorte */
+.hero-right{
+  position: relative;
+  min-height: 420px;
+}
+
+.hero-cutout{
+  position: absolute;
+  right: -12px;
+  bottom: -28px;
+  width: min(440px, 42vw);
+  max-height: 560px;
+  object-fit: contain;
+  z-index: 0;
+
+  opacity: .95;
+  filter:
+    drop-shadow(0 22px 45px rgba(0,0,0,.55))
+    drop-shadow(0 0 18px rgba(124,92,255,.18));
+
+  -webkit-mask-image: linear-gradient(to bottom, black 72%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 72%, transparent 100%);
+}
+
 .hero-card{
   border: 1px solid rgba(255,255,255,.12);
   background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
@@ -132,6 +156,27 @@ h1{ margin: 10px 0 8px; font-size: clamp(32px, 4vw, 46px); line-height: 1.15; }
   display:flex; gap: 14px;
   align-items:center;
   transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+.hero-card-float{
+  position: relative;
+  z-index: 1;
+  backdrop-filter: blur(10px);
+}
+
+.hero-media{
+  display:flex;
+  gap: 10px;
+  align-items:center;
+}
+
+.profile-photo{
+  width: 54px;
+  height: 54px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.03);
+  box-shadow: 0 10px 25px rgba(0,0,0,.35);
 }
 
 .brand-mark{
@@ -539,6 +584,22 @@ textarea{ resize: vertical; }
 .t-date{ color: var(--muted); font-size: 13px; }
 .t-desc{ margin: 6px 0 0; color: var(--muted); }
 
+/* Sobre - fotos */
+.about-photos{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.about-photo{
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.03);
+}
+
 /* Footer */
 .footer{
   border-top: 1px solid var(--border);
@@ -722,6 +783,17 @@ body::after{
 /* Responsivo */
 @media (max-width: 900px){
   .hero{ grid-template-columns: 1fr; }
+  .hero-right{ min-height: auto; }
+  .hero-cutout{
+    position: static;
+    display: block;
+    width: min(420px, 92vw);
+    max-height: 420px;
+    margin: 10px auto 8px;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
   .grid{ grid-template-columns: 1fr; }
   .two-col{ grid-template-columns: 1fr; }
   .aether-grid{ grid-template-columns: 1fr; }
@@ -729,6 +801,7 @@ body::after{
   .product-grid{ grid-template-columns: 1fr; }
   .form-row{ grid-template-columns: 1fr; }
   .status-grid{ grid-template-columns: 1fr; }
+  .about-photos{ grid-template-columns: 1fr; }
 
   .menu-btn{ display:inline-flex; }
   .menu{
