@@ -46,6 +46,29 @@ const modalListEl = document.getElementById("modalList");
 const modalLinksEl = document.getElementById("modalLinks");
 const modalAdminEl = document.getElementById("modalAdmin");
 
+function svgPlaceholder(title, subtitle = "Sem imagem") {
+  const safeTitle = String(title).replace(/[<>&"]/g, "");
+  const safeSub = String(subtitle).replace(/[<>&"]/g, "");
+  const svg = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#7c5cff" stop-opacity="0.65"/>
+        <stop offset="1" stop-color="#22c55e" stop-opacity="0.35"/>
+      </linearGradient>
+    </defs>
+    <rect width="100%" height="100%" fill="#0b1220"/>
+    <rect x="40" y="40" width="1120" height="670" rx="36" fill="url(#g)" opacity="0.35"/>
+    <text x="90" y="340" fill="rgba(255,255,255,0.92)" font-size="64" font-family="Arial, sans-serif" font-weight="700">
+      ${safeTitle}
+    </text>
+    <text x="90" y="410" fill="rgba(255,255,255,0.70)" font-size="30" font-family="Arial, sans-serif">
+      ${safeSub}
+    </text>
+  </svg>`;
+  return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+}
+
 function loadCustomItems() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -80,6 +103,7 @@ function fileToDataUrl(file) {
   });
 }
 
+// Itens fixos (base)
 const baseItems = [
   // Aether Shift (assets)
   {
@@ -89,10 +113,10 @@ const baseItems = [
     status: "Identidade",
     date: "2026",
     image: "assets/aether-shift-logo-sa.jpg",
-    description: "Monograma principal (SA). Ótimo para peças minimalistas sem texto.",
+    description: "Monograma principal (SA). Minimalismo premium e assinatura da marca.",
     bullets: [
       "Aplicação premium: bordado pequeno/peito/etiqueta/boné.",
-      "Funciona muito bem em branco/preto sem poluir a peça."
+      "Reconhecimento sem poluição visual."
     ],
     links: [],
     custom: false
@@ -104,10 +128,10 @@ const baseItems = [
     status: "Identidade",
     date: "2026",
     image: "assets/aether-shift-wordmark.jpg",
-    description: "Nome da marca para usos onde o texto precisa aparecer com força.",
+    description: "Nome da marca para reforço oficial (campanha, embalagem, assinatura).",
     bullets: [
-      "Uso: embalagem, site, etiqueta, posts e campanhas.",
-      "Combina com o símbolo (SA) para construir reconhecimento."
+      "Reforça marca quando o símbolo não basta.",
+      "Base de consistência para o digital."
     ],
     links: [],
     custom: false
@@ -119,10 +143,10 @@ const baseItems = [
     status: "Mockup",
     date: "2026",
     image: "assets/aether-shift-cap.jpg",
-    description: "Mockup de aplicação do símbolo e do nome em boné.",
+    description: "Assinatura discreta: SA na frente + nome em pontos secundários.",
     bullets: [
-      "Frente: SA (clean).",
-      "Lateral/traseira: Aether Shift (reforço de marca)."
+      "Minimalista e reconhecível.",
+      "Peça de presença no dia a dia."
     ],
     links: [],
     custom: false
@@ -134,10 +158,10 @@ const baseItems = [
     status: "Mockup",
     date: "2026",
     image: "assets/aether-shift-hoodie-mockups.jpg",
-    description: "Variações: clean (só símbolo) e versões com nome.",
+    description: "Direção do Drop 01: clean com SA e variações com wordmark.",
     bullets: [
-      "Clean = mais premium/minimal.",
-      "Nome pequeno = branding sem poluir."
+      "Peça-chave do drop (presença).",
+      "Marca bem posicionada, sem exagero."
     ],
     links: [],
     custom: false
@@ -149,10 +173,10 @@ const baseItems = [
     status: "Mockup",
     date: "2026",
     image: "assets/aether-shift-sneaker.jpg",
-    description: "Mockup de aplicação em calçado (visão de collab/edição especial).",
+    description: "Visão de extensão/collab: reforço de identidade e desejo de marca.",
     bullets: [
-      "Peça de desejo (bom para reforçar identidade).",
-      "Serve como referência visual de direção estética."
+      "Referência estética para o futuro.",
+      "Cria desejo e consistência visual."
     ],
     links: [],
     custom: false
@@ -166,7 +190,7 @@ const baseItems = [
     image: "assets/aether-shift-tagline.jpg",
     description: "“Conectando expressão e autenticidade de forma intensa.”",
     bullets: [
-      "Boa para página da marca, embalagem e campanha.",
+      "Boa para campanha, embalagem e página da marca.",
       "Pode virar conceito do Drop 01."
     ],
     links: [],
@@ -179,10 +203,10 @@ const baseItems = [
     status: "Mockup",
     date: "2026",
     image: "assets/aether-shift-tee-mockups.jpg",
-    description: "Variações de posicionamento do símbolo e do nome na camiseta.",
+    description: "Camiseta base do Drop 01 com variações de assinatura (minimal/destaque).",
     bullets: [
-      "Símbolo grande = statement piece.",
-      "Símbolo pequeno = premium/minimal."
+      "Uniforme do construtor: simples e forte.",
+      "Define a assinatura visual da marca."
     ],
     links: [],
     custom: false
@@ -194,27 +218,47 @@ const baseItems = [
     status: "Mockup",
     date: "2026",
     image: "assets/aether-shift-backprint.jpg",
-    description: "Aplicação nas costas com wordmark e símbolo pequeno no topo.",
+    description: "Story piece: frente limpa, costas comunicam (narrativa do drop).",
     bullets: [
-      "Costas é ótima para storytelling/coleção.",
-      "Frente fica limpa, atrás comunica."
+      "Perfeita para campanha/foto.",
+      "Cria conversa e storytelling."
     ],
     links: [],
     custom: false
   },
 
-  // Tech (exemplo fixo)
+  // Mizuryu (sem arte própria ainda)
+  {
+    id: "mizuryu-conceito",
+    title: "Mizuryu — Dragão da Água (conceito)",
+    category: "Mizuryu",
+    status: "Conceito",
+    date: "Futuro",
+    image: svgPlaceholder("Mizuryu", "Time • disciplina • evolução"),
+    description: "Projeto de time de vôlei conectado ao ecossistema: alto desempenho + identidade.",
+    bullets: [
+      "Dragão = poder, ambição e domínio.",
+      "Água = adaptação, fluidez e movimento constante.",
+      "Visão: marca e esporte se fortalecendo juntos."
+    ],
+    links: [
+      { label: "Contato", url: "mailto:necklas.contact@gmail.com?subject=Mizuryu%20-%20Contato" }
+    ],
+    custom: false
+  },
+
+  // Tech (placeholder visual)
   {
     id: "portfolio-site",
     title: "Portfólio — Website",
     category: "Tech",
     status: "Ativo",
     date: "2026",
-    image: "assets/aether-shift-wordmark.jpg",
-    description: "Este site: organização de projetos, galeria interativa, timeline e identidade.",
+    image: svgPlaceholder("Portfólio", "HTML • CSS • JS"),
+    description: "Este site: organização de marca/projetos + galeria interativa + timeline.",
     bullets: [
       "Responsivo e simples de manter.",
-      "Modal e filtros.",
+      "Filtros, modal e upload local.",
       "Publicação via GitHub Pages."
     ],
     links: [
@@ -269,7 +313,23 @@ function getFilteredItems() {
   return items.filter((i) => i.category === state.filter);
 }
 
+// Carrossel de roteiro: inicializar sob demanda (porque fica hidden)
+let storyCarouselInitialized = false;
+
 function renderGallery() {
+  // Mostra/oculta o roteiro do Drop 01
+  const aetherStoryWrap = document.getElementById("aetherStoryWrap");
+  const shouldShowStory = state.filter === "Aether Shift";
+  if (aetherStoryWrap) {
+    aetherStoryWrap.hidden = !shouldShowStory;
+
+    if (shouldShowStory && !storyCarouselInitialized) {
+      const carouselRoot = aetherStoryWrap.querySelector("[data-carousel]");
+      if (carouselRoot) initCarousel(carouselRoot);
+      storyCarouselInitialized = true;
+    }
+  }
+
   if (!galleryEl) return;
 
   const filtered = getFilteredItems();
@@ -310,7 +370,6 @@ function renderGallery() {
     btn.appendChild(desc);
 
     btn.addEventListener("click", () => openModal(item.id));
-
     galleryEl.appendChild(btn);
   });
 }
@@ -485,11 +544,12 @@ function clearCustomItems() {
 const timelineEl = document.getElementById("timelineList");
 
 const timeline = [
-  { date: "Agora", title: "Portfólio no ar (e evoluindo)", desc: "Publicar, manter atualizado e adicionar projetos reais." },
+  { date: "Agora", title: "Portfólio no ar (e evoluindo)", desc: "Manter atualizado e transformar projetos em entregas reais." },
   { date: "Próximas semanas", title: "Mini-projetos JS consistentes", desc: "Criar e publicar repositórios (to-do, jogo, gerador de senha)." },
-  { date: "Curto prazo", title: "Aether Shift — Drop 01", desc: "Organizar mockups, validar peças e preparar execução." },
+  { date: "Curto prazo", title: "Aether Shift — Drop 01", desc: "Validar direção, fechar detalhes e estruturar execução." },
+  { date: "Curto/Médio prazo", title: "Mizuryu — identidade e estrutura", desc: "Definir proposta do time, identidade e evolução do projeto." },
   { date: "Médio prazo", title: "Projeto digital próprio", desc: "Ferramenta/app/plataforma que resolva um problema real." },
-  { date: "Longo prazo", title: "Marca forte + equipe de vôlei", desc: "Construir estrutura para patrocinar/sustentar um time e liderar o projeto." }
+  { date: "Longo prazo", title: "Marca forte + equipe sustentada", desc: "Aether Shift e Mizuryu fortalecendo um ao outro." }
 ];
 
 function renderTimeline() {
@@ -513,7 +573,7 @@ function renderTimeline() {
 }
 
 // =====================
-// Ações: filtro rápido + abrir modal pelos botões do Drop
+// Atalhos: filtros + abrir modal
 // =====================
 document.addEventListener("click", (e) => {
   const target = e.target;
@@ -572,6 +632,78 @@ if (waitlistForm) {
 
     window.location.href = mailto;
   });
+}
+
+// =====================
+// Carousel (roteiro)
+// =====================
+function initCarousel(root){
+  const track = root.querySelector("[data-carousel-track]");
+  const prev = root.querySelector("[data-carousel-prev]");
+  const next = root.querySelector("[data-carousel-next]");
+  const dotsWrap = root.querySelector("[data-carousel-dots]");
+  const statusEl = root.closest(".card")?.querySelector("[data-carousel-status]");
+  if (!track) return;
+
+  const cards = Array.from(track.children);
+
+  function currentIndex(){
+    const left = track.scrollLeft;
+    let best = 0;
+    let bestDist = Infinity;
+
+    cards.forEach((card, i) => {
+      const dist = Math.abs(card.offsetLeft - left);
+      if (dist < bestDist) { bestDist = dist; best = i; }
+    });
+
+    return best;
+  }
+
+  function scrollToIndex(i){
+    const clamped = Math.max(0, Math.min(cards.length - 1, i));
+    const card = cards[clamped];
+    if (!card) return;
+    track.scrollTo({ left: card.offsetLeft, behavior: "smooth" });
+  }
+
+  if (dotsWrap){
+    dotsWrap.innerHTML = "";
+    cards.forEach((_, i) => {
+      const d = document.createElement("button");
+      d.type = "button";
+      d.className = "carousel-dot";
+      d.setAttribute("aria-label", `Ir para o card ${i + 1}`);
+      d.addEventListener("click", () => scrollToIndex(i));
+      dotsWrap.appendChild(d);
+    });
+  }
+
+  function updateUI(){
+    const i = currentIndex();
+    if (statusEl) statusEl.textContent = `${i + 1} / ${cards.length}`;
+
+    if (dotsWrap){
+      Array.from(dotsWrap.children).forEach((dot, idx) => {
+        dot.classList.toggle("active", idx === i);
+      });
+    }
+
+    if (prev) prev.disabled = i === 0;
+    if (next) next.disabled = i === cards.length - 1;
+  }
+
+  prev?.addEventListener("click", () => scrollToIndex(currentIndex() - 1));
+  next?.addEventListener("click", () => scrollToIndex(currentIndex() + 1));
+
+  let raf = null;
+  track.addEventListener("scroll", () => {
+    if (raf) cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(updateUI);
+  });
+
+  window.addEventListener("resize", updateUI);
+  updateUI();
 }
 
 // =====================
