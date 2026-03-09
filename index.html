@@ -1,26 +1,23 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Matheus Gouveia (Necklas) | Portfólio</title>
   <meta name="description" content="Portfólio de Matheus Gouveia (Necklas): Aether Shift, Mizuryu, projetos e galeria interativa." />
 
-  <!-- Favicon + Preview Social (GitHub Pages) -->
-  <link rel="icon" href="assets/favicon.png" type="image/png" />
+  <!-- Link publicado -->
   <link rel="canonical" href="https://necklaztheoffice.github.io/portfolio/" />
 
+  <!-- Favicon/Preview (temporário usando SA, sem depender de arquivos extras) -->
+  <link rel="icon" href="assets/aether-shift-logo-sa.jpg" type="image/jpeg" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Necklas | Aether Shift + Mizuryu" />
   <meta property="og:description" content="Aether Shift, Mizuryu, projetos e galeria interativa." />
   <meta property="og:url" content="https://necklaztheoffice.github.io/portfolio/" />
-  <meta property="og:image" content="https://necklaztheoffice.github.io/portfolio/assets/og.jpg" />
-
+  <meta property="og:image" content="https://necklaztheoffice.github.io/portfolio/assets/aether-shift-logo-sa.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Necklas | Aether Shift + Mizuryu" />
-  <meta name="twitter:description" content="Aether Shift, Mizuryu, projetos e galeria interativa." />
-  <meta name="twitter:image" content="https://necklaztheoffice.github.io/portfolio/assets/og.jpg" />
-
+  <meta name="twitter:image" content="https://necklaztheoffice.github.io/portfolio/assets/aether-shift-logo-sa.jpg" />
   <meta name="theme-color" content="#0b1220" />
 
   <link rel="stylesheet" href="styles.css" />
@@ -46,14 +43,30 @@
         <li><a href="#contato">Contato</a></li>
       </ul>
 
-      <button class="theme-btn" id="themeToggle" type="button" aria-pressed="false">
-  <span class="theme-icon" aria-hidden="true"></span>
-  <span class="theme-text">Tema</span>
-</button>
+      <div class="nav-actions">
+        <!-- Theme toggle -->
+        <button class="theme-btn" id="themeToggle" type="button" aria-label="Alternar tema">
+          <span class="theme-icon theme-icon-moon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+              <path d="M21 14.3A8.5 8.5 0 0 1 9.7 3a7 7 0 1 0 11.3 11.3Z" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="theme-icon theme-icon-sun" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+              <path d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12Z" fill="currentColor"/>
+              <path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M5 19l1.5-1.5"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="theme-label">Tema</span>
+          <span class="theme-state" id="themeState">Escuro</span>
+        </button>
 
-      <button class="cart-btn" id="cartBtn" type="button" aria-label="Abrir carrinho">
-        Carrinho <span class="cart-count" id="cartCount">0</span>
-      </button>
+        <!-- Cart -->
+        <button class="cart-btn" id="cartBtn" type="button" aria-label="Abrir carrinho">
+          Carrinho <span class="cart-count" id="cartCount">0</span>
+        </button>
+      </div>
     </nav>
   </header>
 
@@ -67,8 +80,9 @@
 
         <p class="lead">
           Tenho <strong>18 anos</strong> e estou construindo um caminho focado em <strong>criação</strong>,
-          <strong>autonomia</strong> e <strong>impacto real</strong>. Eu uno <strong>marca</strong>,
-          <strong>empreendedorismo digital</strong> e <strong>tecnologia</strong> para transformar ideias em execução.
+          <strong>autonomia</strong> e <strong>impacto real</strong>.
+          Eu uno <strong>marca</strong>, <strong>empreendedorismo digital</strong> e <strong>tecnologia</strong>
+          para transformar ideias em execução.
         </p>
 
         <div class="hero-cta">
@@ -84,14 +98,13 @@
         </div>
       </div>
 
-      <!-- DIREITA (foto recortada + card flutuante) -->
       <div class="hero-right">
-        <img class="hero-cutout" src="assets/necklas-cutout.png" alt="Foto de Matheus Gouveia (Necklas)" loading="eager" />
+        <img class="hero-cutout" src="assets/necklas-cutout.png" alt="Sua foto recortada" loading="eager" />
 
         <div class="hero-card hero-card-float">
           <div class="hero-media">
-            <img class="profile-photo" src="assets/necklas-portrait.jpg" alt="Foto de Matheus (Necklas)" />
-            <img class="brand-mark" src="assets/aether-shift-logo-sa.jpg" alt="Aether Shift — monograma SA" />
+            <img class="profile-photo" src="assets/necklas-portrait.jpg" alt="Foto (retrato)" />
+            <img class="brand-mark" src="assets/aether-shift-logo-sa.jpg" alt="Aether Shift — SA" />
           </div>
 
           <div>
@@ -122,7 +135,6 @@
       </div>
 
       <div class="aether-grid">
-        <!-- Manifesto -->
         <div class="card">
           <div class="card-kicker">
             <span class="pill">Marca</span>
@@ -138,25 +150,24 @@
           </p>
 
           <p class="muted">
-            Cada peça é pensada como um símbolo de mentalidade: ambição, disciplina, evolução e visão.
-            O objetivo não é vender apenas estética, mas transmitir valores e identidade através do design.
+            Cada peça é pensada como símbolo de mentalidade: ambição, disciplina, evolução e visão.
+            O objetivo é transmitir valores e identidade através do design.
           </p>
 
           <h4 style="margin: 14px 0 6px;">O que buscamos entregar</h4>
           <ul class="list">
-            <li><strong>Assinatura reconhecível:</strong> monograma SA como símbolo.</li>
-            <li><strong>Clean premium:</strong> marca bem posicionada, sem poluição visual.</li>
-            <li><strong>Narrativa:</strong> peças com história (não só “estampa bonita”).</li>
+            <li><strong>Assinatura reconhecível:</strong> SA como símbolo.</li>
+            <li><strong>Clean premium:</strong> marca bem posicionada, sem poluição.</li>
+            <li><strong>Narrativa:</strong> peças com história.</li>
             <li><strong>Comunidade:</strong> quem veste se identifica com a mentalidade.</li>
           </ul>
 
           <div class="hero-cta" style="margin-top: 12px;">
             <a class="btn btn-ghost" href="#explorar" data-filter="Aether Shift">Ver mockups</a>
-            <a class="btn btn-ghost" href="#produto">Ver página de produto</a>
+            <a class="btn btn-ghost" href="#produto">Página de produto</a>
           </div>
         </div>
 
-        <!-- Direção visual -->
         <div class="card">
           <div class="card-kicker">
             <span class="pill">Drop 01</span>
@@ -167,20 +178,19 @@
 
           <h3>Direção visual (mockups)</h3>
 
-          <img class="aether-model" src="assets/aether-shift-hoodie-mockups.jpg" alt="Mockups do moletom Aether Shift" loading="lazy" />
+          <img class="aether-model" src="assets/aether-shift-hoodie-mockups.jpg" alt="Mockups Aether Shift" loading="lazy" />
 
           <p class="muted" style="margin-top: 10px;">
-            Frente mais limpa, assinatura com SA e wordmark em pontos estratégicos quando fizer sentido.
+            Frente limpa, assinatura com SA e wordmark em pontos estratégicos quando fizer sentido.
           </p>
 
           <div class="hero-cta" style="margin-top: 10px;">
-            <a class="btn btn-ghost" href="#explorar" data-filter="Aether Shift">Abrir galeria</a>
-            <a class="btn btn-ghost" href="#brandkit">Ver Brand Kit</a>
+            <a class="btn btn-ghost" href="#brandkit">Brand Kit</a>
           </div>
         </div>
       </div>
 
-      <!-- Roadmap com status -->
+      <!-- Roadmap -->
       <div class="card" style="margin-top: 16px;">
         <div class="roadmap-head">
           <h3 style="margin:0;">Roadmap</h3>
@@ -189,170 +199,116 @@
 
         <div class="roadmap-grid">
           <div class="roadmap-item" data-status="done">
-            <div class="roadmap-top">
-              <span class="roadmap-badge">Feito</span>
-              <strong>Direção visual + mockups base</strong>
-            </div>
+            <div class="roadmap-top"><span class="roadmap-badge">Feito</span><strong>Direção visual + mockups base</strong></div>
             <p class="muted">Linguagem inicial (clean/premium, SA/wordmark).</p>
           </div>
 
           <div class="roadmap-item" data-status="doing">
-            <div class="roadmap-top">
-              <span class="roadmap-badge">Em andamento</span>
-              <strong>Fechar identidade final</strong>
-            </div>
+            <div class="roadmap-top"><span class="roadmap-badge">Em andamento</span><strong>Fechar identidade final</strong></div>
             <p class="muted">Regras de aplicação e consistência visual.</p>
           </div>
 
           <div class="roadmap-item" data-status="next">
-            <div class="roadmap-top">
-              <span class="roadmap-badge">Próximo</span>
-              <strong>Definir Drop 01</strong>
-            </div>
-            <p class="muted">Peças, posicionamentos, variações e narrativa.</p>
+            <div class="roadmap-top"><span class="roadmap-badge">Próximo</span><strong>Definir Drop 01</strong></div>
+            <p class="muted">Peças, variações e narrativa.</p>
           </div>
 
           <div class="roadmap-item" data-status="later">
-            <div class="roadmap-top">
-              <span class="roadmap-badge">Depois</span>
-              <strong>Criar estampas / variações</strong>
-            </div>
-            <p class="muted">Símbolos e histórias por peça.</p>
+            <div class="roadmap-top"><span class="roadmap-badge">Depois</span><strong>Fotos / criativos</strong></div>
+            <p class="muted">Lookbook, conteúdo e campanha.</p>
           </div>
 
           <div class="roadmap-item" data-status="later">
-            <div class="roadmap-top">
-              <span class="roadmap-badge">Depois</span>
-              <strong>Fotos / criativos</strong>
-            </div>
-            <p class="muted">Lookbook, conteúdo e direção de campanha.</p>
-          </div>
-
-          <div class="roadmap-item" data-status="later">
-            <div class="roadmap-top">
-              <span class="roadmap-badge">Depois</span>
-              <strong>Primeiros testes</strong>
-            </div>
+            <div class="roadmap-top"><span class="roadmap-badge">Depois</span><strong>Primeiros testes</strong></div>
             <p class="muted">Validação real (interesse, feedback, demanda).</p>
           </div>
 
           <div class="roadmap-item" data-status="later">
-            <div class="roadmap-top">
-              <span class="roadmap-badge">Depois</span>
-              <strong>Construir comunidade</strong>
-            </div>
-            <p class="muted">Conectar pessoas com a mentalidade da marca.</p>
+            <div class="roadmap-top"><span class="roadmap-badge">Depois</span><strong>Construir comunidade</strong></div>
+            <p class="muted">Conectar pessoas com a mentalidade.</p>
           </div>
         </div>
       </div>
 
-      <!-- Lookbook premium (coverflow) -->
+      <!-- Lookbook coverflow -->
       <div class="card" style="margin-top: 16px;">
-        <div class="coverflow-head">
-          <div>
-            <h3 style="margin:0;">Lookbook — Drop 01 (foco central)</h3>
-            <p class="muted" style="margin:6px 0 0;">Arraste, use as setas, ou ative/desative autoplay.</p>
+        <div class="coverflow" data-coverflow data-cf-key="aether" data-autoplay="true">
+          <div class="coverflow-head">
+            <div>
+              <h3 style="margin:0;">Lookbook — Drop 01 (foco central)</h3>
+              <p class="muted" style="margin:6px 0 0;">Clique para centralizar e abrir detalhes.</p>
+            </div>
+
+            <div class="coverflow-actions">
+              <button class="cf-toggle" type="button" data-cf-toggle aria-pressed="true" aria-label="Alternar autoplay">
+                <span class="cf-icon cf-icon-play" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M9 7.5v9l8-4.5-8-4.5z" fill="currentColor"/></svg>
+                </span>
+                <span class="cf-icon cf-icon-pause" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M7.5 6.5h3v11h-3v-11zm6 0h3v11h-3v-11z" fill="currentColor"/></svg>
+                </span>
+                <span class="cf-toggle-text">Autoplay</span>
+                <span class="cf-toggle-state" data-cf-state>On</span>
+              </button>
+
+              <button class="carousel-btn" type="button" data-cf-prev aria-label="Anterior">←</button>
+              <button class="carousel-btn" type="button" data-cf-next aria-label="Próximo">→</button>
+            </div>
           </div>
 
-          <div class="coverflow-actions">
-            <button class="cf-toggle" type="button" data-cf-toggle aria-pressed="true" aria-label="Alternar autoplay">
-              <span class="cf-icon cf-icon-play" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
-                  <path d="M9 7.5v9l8-4.5-8-4.5z" fill="currentColor"/>
-                </svg>
-              </span>
-
-              <span class="cf-icon cf-icon-pause" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
-                  <path d="M7.5 6.5h3v11h-3v-11zm6 0h3v11h-3v-11z" fill="currentColor"/>
-                </svg>
-              </span>
-
-              <span class="cf-toggle-text">Autoplay</span>
-              <span class="cf-toggle-state" data-cf-state>On</span>
-            </button>
-
-            <button class="carousel-btn" type="button" data-cf-prev aria-label="Anterior">←</button>
-            <button class="carousel-btn" type="button" data-cf-next aria-label="Próximo">→</button>
-          </div>
-        </div>
-
-        <div class="coverflow" data-coverflow data-cf-key="aether-lookbook" data-autoplay="true">
           <div class="coverflow-viewport" data-cf-viewport>
             <button class="coverflow-item" type="button" data-open-item="aether-shift-tee-mockups">
-              <img src="assets/aether-shift-tee-mockups.jpg" alt="Camiseta Aether Shift" />
-              <div class="coverflow-caption">
-                <strong>Camiseta — Essential SA</strong>
-                <span>Assinatura minimal/destaque</span>
-              </div>
+              <img src="assets/aether-shift-tee-mockups.jpg" alt="Camiseta" />
+              <div class="coverflow-caption"><strong>Camiseta</strong><span>Assinatura</span></div>
             </button>
 
             <button class="coverflow-item" type="button" data-open-item="aether-shift-hoodie-mockups">
-              <img src="assets/aether-shift-hoodie-mockups.jpg" alt="Moletom Aether Shift" />
-              <div class="coverflow-caption">
-                <strong>Moletom — Shift Hoodie</strong>
-                <span>Presença • disciplina</span>
-              </div>
+              <img src="assets/aether-shift-hoodie-mockups.jpg" alt="Moletom" />
+              <div class="coverflow-caption"><strong>Moletom</strong><span>Presença</span></div>
             </button>
 
             <button class="coverflow-item" type="button" data-open-item="aether-shift-cap">
-              <img src="assets/aether-shift-cap.jpg" alt="Boné Aether Shift" />
-              <div class="coverflow-caption">
-                <strong>Boné — SA Cap</strong>
-                <span>Assinatura silenciosa</span>
-              </div>
+              <img src="assets/aether-shift-cap.jpg" alt="Boné" />
+              <div class="coverflow-caption"><strong>Boné</strong><span>Silencioso</span></div>
             </button>
 
             <button class="coverflow-item" type="button" data-open-item="aether-shift-backprint">
-              <img src="assets/aether-shift-backprint.jpg" alt="Back print Aether Shift" />
-              <div class="coverflow-caption">
-                <strong>Back Print — Story Piece</strong>
-                <span>Costas comunicam</span>
-              </div>
+              <img src="assets/aether-shift-backprint.jpg" alt="Back print" />
+              <div class="coverflow-caption"><strong>Back print</strong><span>Narrativa</span></div>
             </button>
 
             <button class="coverflow-item" type="button" data-open-item="aether-shift-logo-sa">
-              <img src="assets/aether-shift-logo-sa.jpg" alt="Logo SA" />
-              <div class="coverflow-caption">
-                <strong>Monograma SA</strong>
-                <span>Assinatura da marca</span>
-              </div>
+              <img src="assets/aether-shift-logo-sa.jpg" alt="SA" />
+              <div class="coverflow-caption"><strong>SA</strong><span>Assinatura</span></div>
             </button>
 
             <button class="coverflow-item" type="button" data-open-item="aether-shift-wordmark">
-              <img src="assets/aether-shift-wordmark.jpg" alt="Wordmark Aether Shift" />
-              <div class="coverflow-caption">
-                <strong>Wordmark</strong>
-                <span>Voz oficial</span>
-              </div>
+              <img src="assets/aether-shift-wordmark.jpg" alt="Wordmark" />
+              <div class="coverflow-caption"><strong>Wordmark</strong><span>Voz</span></div>
             </button>
           </div>
 
-          <div class="coverflow-dots" data-cf-dots aria-label="Paginação do coverflow"></div>
+          <div class="coverflow-dots" data-cf-dots aria-label="Paginação"></div>
         </div>
       </div>
     </section>
 
-    <!-- PRODUTO (simulado) -->
+    <!-- PRODUTO + CATÁLOGO -->
     <section id="produto" class="section container">
       <div class="section-head">
         <h2>Produto (simulado)</h2>
-        <p class="muted">Uma página de produto para dar sensação real de e-commerce (checkout em breve).</p>
+        <p class="muted">Catálogo com carrinho e envio de “pedido” por e-mail (sem checkout real ainda).</p>
       </div>
 
       <div class="product-page">
         <div class="card">
           <h3>Drop 01 — Catálogo</h3>
-          <p class="muted">Você pode adicionar ao carrinho e gerar um “pedido” por e-mail (simulação).</p>
 
           <div class="catalog-grid">
             <article class="catalog-item">
-              <img src="assets/aether-shift-tee-mockups.jpg" alt="Camiseta Aether Shift" />
+              <img src="assets/aether-shift-tee-mockups.jpg" alt="Camiseta" />
               <div class="catalog-body">
-                <div class="catalog-top">
-                  <strong>Camiseta — Essential SA</strong>
-                  <span class="pill">Em breve</span>
-                </div>
+                <div class="catalog-top"><strong>Camiseta — Essential SA</strong><span class="pill">Em breve</span></div>
                 <p class="muted">Base do drop: assinatura minimal/destaque.</p>
 
                 <div class="catalog-controls">
@@ -373,12 +329,9 @@
             </article>
 
             <article class="catalog-item">
-              <img src="assets/aether-shift-hoodie-mockups.jpg" alt="Moletom Aether Shift" />
+              <img src="assets/aether-shift-hoodie-mockups.jpg" alt="Moletom" />
               <div class="catalog-body">
-                <div class="catalog-top">
-                  <strong>Moletom — Shift Hoodie</strong>
-                  <span class="pill">Em breve</span>
-                </div>
+                <div class="catalog-top"><strong>Moletom — Shift Hoodie</strong><span class="pill">Em breve</span></div>
                 <p class="muted">Presença e postura. Peça-chave do drop.</p>
 
                 <div class="catalog-controls">
@@ -399,12 +352,9 @@
             </article>
 
             <article class="catalog-item">
-              <img src="assets/aether-shift-cap.jpg" alt="Boné Aether Shift" />
+              <img src="assets/aether-shift-cap.jpg" alt="Boné" />
               <div class="catalog-body">
-                <div class="catalog-top">
-                  <strong>Boné — SA Cap</strong>
-                  <span class="pill">Em breve</span>
-                </div>
+                <div class="catalog-top"><strong>Boné — SA Cap</strong><span class="pill">Em breve</span></div>
                 <p class="muted">Assinatura silenciosa. Premium sem exagero.</p>
 
                 <div class="catalog-controls">
@@ -425,20 +375,18 @@
             </article>
           </div>
 
-          <p class="muted" style="margin-top: 12px;">
-            Observação: valores e checkout são apenas simulação para interface/UX.
-          </p>
+          <p class="muted" style="margin-top:12px;">Valores e checkout são simulação para UX.</p>
         </div>
 
         <div class="card">
           <h3>Detalhes (modelo)</h3>
           <ul class="list">
-            <li><strong>Direção:</strong> clean premium, assinatura SA e wordmark estratégico.</li>
+            <li><strong>Direção:</strong> clean premium, SA e wordmark estratégico.</li>
             <li><strong>Entrega:</strong> presença, mentalidade e identidade por trás de cada peça.</li>
             <li><strong>Próximo:</strong> validar caimento, tecidos e finalização.</li>
           </ul>
 
-          <div class="hero-cta" style="margin-top: 12px;">
+          <div class="hero-cta" style="margin-top:12px;">
             <a class="btn btn-ghost" href="#explorar" data-filter="Aether Shift">Ver galeria</a>
             <a class="btn btn-ghost" href="mailto:necklas.contact@gmail.com?subject=Aether%20Shift%20-%20Feedback%20Drop%2001">Enviar feedback</a>
           </div>
@@ -450,7 +398,7 @@
     <section id="brandkit" class="section container">
       <div class="section-head">
         <h2>Brand Kit</h2>
-        <p class="muted">Regras visuais e componentes base para consistência da Aether Shift.</p>
+        <p class="muted">Base visual para consistência da Aether Shift.</p>
       </div>
 
       <div class="kit-grid">
@@ -461,9 +409,8 @@
               <img src="assets/aether-shift-logo-sa.jpg" alt="Monograma SA" />
               <figcaption class="muted">Monograma (SA) — assinatura</figcaption>
             </figure>
-
             <figure class="kit-logo">
-              <img src="assets/aether-shift-wordmark.jpg" alt="Wordmark Aether Shift" />
+              <img src="assets/aether-shift-wordmark.jpg" alt="Wordmark" />
               <figcaption class="muted">Wordmark — voz oficial</figcaption>
             </figure>
           </div>
@@ -472,53 +419,25 @@
         <div class="card">
           <h3>Paleta</h3>
           <div class="swatches">
-            <div class="swatch">
-              <div class="swatch-color" style="background:#0b1220;"></div>
-              <div class="swatch-meta">
-                <strong>#0b1220</strong><span class="muted">Base (noite)</span>
-              </div>
-            </div>
-
-            <div class="swatch">
-              <div class="swatch-color" style="background:#7c5cff;"></div>
-              <div class="swatch-meta">
-                <strong>#7c5cff</strong><span class="muted">Acento (roxo)</span>
-              </div>
-            </div>
-
-            <div class="swatch">
-              <div class="swatch-color" style="background:#22c55e;"></div>
-              <div class="swatch-meta">
-                <strong>#22c55e</strong><span class="muted">Acento (verde)</span>
-              </div>
-            </div>
-
-            <div class="swatch">
-              <div class="swatch-color" style="background:#ffffff;"></div>
-              <div class="swatch-meta">
-                <strong>#ffffff</strong><span class="muted">Contraste</span>
-              </div>
-            </div>
+            <div class="swatch"><div class="swatch-color" style="background:#0b1220;"></div><div class="swatch-meta"><strong>#0b1220</strong><span class="muted">Base</span></div></div>
+            <div class="swatch"><div class="swatch-color" style="background:#7c5cff;"></div><div class="swatch-meta"><strong>#7c5cff</strong><span class="muted">Acento</span></div></div>
+            <div class="swatch"><div class="swatch-color" style="background:#22c55e;"></div><div class="swatch-meta"><strong>#22c55e</strong><span class="muted">Acento</span></div></div>
+            <div class="swatch"><div class="swatch-color" style="background:#ffffff;"></div><div class="swatch-meta"><strong>#ffffff</strong><span class="muted">Contraste</span></div></div>
           </div>
-        </div>
-
-        <div class="card">
-          <h3>Tipografia (recomendação)</h3>
-          <ul class="list">
-            <li><strong>Títulos:</strong> forte e limpo (sans).</li>
-            <li><strong>Texto:</strong> legível e direto.</li>
-            <li><strong>Assinatura:</strong> wordmark como “voz” (uso estratégico).</li>
-          </ul>
-          <p class="muted">Este site usa system-ui para performance e consistência.</p>
         </div>
 
         <div class="card">
           <h3>Regras rápidas</h3>
           <ul class="list">
-            <li><strong>SA</strong> = presença (peças minimalistas e premium).</li>
+            <li><strong>SA</strong> = presença (premium/minimal).</li>
             <li><strong>Wordmark</strong> = reforço (campanha, embalagem, storytelling).</li>
-            <li>Evitar poluição visual: poucos elementos bem posicionados.</li>
+            <li>Evitar poluição: poucos elementos bem posicionados.</li>
           </ul>
+        </div>
+
+        <div class="card">
+          <h3>Tipografia</h3>
+          <p class="muted">Este site usa system-ui (rápido e consistente). Você pode mudar depois para uma fonte própria da marca.</p>
         </div>
       </div>
     </section>
@@ -538,29 +457,20 @@
             <strong>construção</strong>. A ideia é desenvolver uma equipe que represente disciplina, evolução contínua e performance.
           </p>
 
-          <h4 style="margin: 14px 0 6px;">Significado do nome</h4>
+          <h4 style="margin: 14px 0 6px;">Significado</h4>
           <p class="muted">
             <strong>Mizuryu</strong> = “dragão da água”. Dragão = poder/ambição; água = adaptação/movimento.
-            Juntos: atletas que evoluem e sobem de nível.
           </p>
         </div>
 
         <div class="card">
           <h3>Conexão com a marca</h3>
           <p class="muted">
-            A visão é que, no futuro, a própria marca ajude a <strong>patrocinar</strong> e <strong>sustentar</strong> a equipe,
-            criando um ciclo onde negócio e esporte se fortalecem mutuamente.
+            A visão é que, no futuro, a marca ajude a <strong>patrocinar</strong> e <strong>sustentar</strong> a equipe,
+            criando um ciclo onde negócio e esporte se fortalecem.
           </p>
 
-          <div class="chips" style="margin-top: 12px;">
-            <span class="chip">Disciplina</span>
-            <span class="chip">Evolução</span>
-            <span class="chip">Performance</span>
-            <span class="chip">Equipe</span>
-            <span class="chip">Marca & identidade</span>
-          </div>
-
-          <div class="hero-cta" style="margin-top: 12px;">
+          <div class="hero-cta" style="margin-top:12px;">
             <a class="btn btn-ghost" href="#explorar" data-filter="Mizuryu">Ver na galeria</a>
             <a class="btn btn-ghost" href="mailto:necklas.contact@gmail.com?subject=Mizuryu%20-%20Contato">Contato</a>
           </div>
@@ -572,134 +482,116 @@
     <section id="explorar" class="section container">
       <div class="section-head">
         <h2>Explorar (interativo)</h2>
-        <p class="muted">Galeria com filtros + modal + upload. A URL guarda filtro/busca/favoritos/ordem.</p>
+        <p class="muted">Galeria com filtros, busca, favoritos, upload e URL compartilhável.</p>
       </div>
 
-      <!-- Lookbook do Explorar (aparece quando filtro = Aether Shift) -->
+      <!-- Coverflow extra (aparece quando filtro = Aether Shift) -->
       <div class="card" id="aetherStoryWrap" hidden>
-        <div class="coverflow-head">
-          <div>
-            <h3 style="margin:0;">Lookbook na Galeria — Aether Shift</h3>
-            <p class="muted" style="margin:6px 0 0;">Foco central com autoplay opcional (controlado pelo visitante).</p>
+        <div class="coverflow" data-coverflow data-cf-key="explorar" data-autoplay="true">
+          <div class="coverflow-head">
+            <div>
+              <h3 style="margin:0;">Lookbook na galeria — Aether Shift</h3>
+              <p class="muted" style="margin:6px 0 0;">Foco central com autoplay opcional.</p>
+            </div>
+
+            <div class="coverflow-actions">
+              <button class="cf-toggle" type="button" data-cf-toggle aria-pressed="true" aria-label="Alternar autoplay">
+                <span class="cf-icon cf-icon-play" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M9 7.5v9l8-4.5-8-4.5z" fill="currentColor"/></svg>
+                </span>
+                <span class="cf-icon cf-icon-pause" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M7.5 6.5h3v11h-3v-11zm6 0h3v11h-3v-11z" fill="currentColor"/></svg>
+                </span>
+                <span class="cf-toggle-text">Autoplay</span>
+                <span class="cf-toggle-state" data-cf-state>On</span>
+              </button>
+
+              <button class="carousel-btn" type="button" data-cf-prev aria-label="Anterior">←</button>
+              <button class="carousel-btn" type="button" data-cf-next aria-label="Próximo">→</button>
+            </div>
           </div>
 
-          <div class="coverflow-actions">
-            <button class="cf-toggle" type="button" data-cf-toggle aria-pressed="true" aria-label="Alternar autoplay">
-              <span class="cf-icon cf-icon-play" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
-                  <path d="M9 7.5v9l8-4.5-8-4.5z" fill="currentColor"/>
-                </svg>
-              </span>
-              <span class="cf-icon cf-icon-pause" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
-                  <path d="M7.5 6.5h3v11h-3v-11zm6 0h3v11h-3v-11z" fill="currentColor"/>
-                </svg>
-              </span>
-              <span class="cf-toggle-text">Autoplay</span>
-              <span class="cf-toggle-state" data-cf-state>On</span>
-            </button>
-
-            <button class="carousel-btn" type="button" data-cf-prev aria-label="Anterior">←</button>
-            <button class="carousel-btn" type="button" data-cf-next aria-label="Próximo">→</button>
-          </div>
-        </div>
-
-        <div class="coverflow" data-coverflow data-cf-key="explore-lookbook" data-autoplay="true">
           <div class="coverflow-viewport" data-cf-viewport>
             <button class="coverflow-item" type="button" data-open-item="aether-shift-tee-mockups">
-              <img src="assets/aether-shift-tee-mockups.jpg" alt="Camiseta Aether Shift" />
+              <img src="assets/aether-shift-tee-mockups.jpg" alt="Camiseta" />
               <div class="coverflow-caption"><strong>Camiseta</strong><span>Assinatura</span></div>
             </button>
             <button class="coverflow-item" type="button" data-open-item="aether-shift-hoodie-mockups">
-              <img src="assets/aether-shift-hoodie-mockups.jpg" alt="Moletom Aether Shift" />
+              <img src="assets/aether-shift-hoodie-mockups.jpg" alt="Moletom" />
               <div class="coverflow-caption"><strong>Moletom</strong><span>Presença</span></div>
             </button>
             <button class="coverflow-item" type="button" data-open-item="aether-shift-cap">
-              <img src="assets/aether-shift-cap.jpg" alt="Boné Aether Shift" />
+              <img src="assets/aether-shift-cap.jpg" alt="Boné" />
               <div class="coverflow-caption"><strong>Boné</strong><span>Silencioso</span></div>
             </button>
             <button class="coverflow-item" type="button" data-open-item="aether-shift-backprint">
-              <img src="assets/aether-shift-backprint.jpg" alt="Back print Aether Shift" />
+              <img src="assets/aether-shift-backprint.jpg" alt="Back print" />
               <div class="coverflow-caption"><strong>Back print</strong><span>Narrativa</span></div>
             </button>
           </div>
 
-          <div class="coverflow-dots" data-cf-dots aria-label="Paginação do coverflow"></div>
+          <div class="coverflow-dots" data-cf-dots aria-label="Paginação"></div>
         </div>
       </div>
 
-      <!-- Upload / Add item -->
+      <!-- Add item -->
       <div class="card">
         <h3>Adicionar item (com imagem)</h3>
-        <p class="muted">
-          Cria um card na galeria e salva no navegador (localStorage). Para ficar definitivo no GitHub Pages,
-          use imagens em <code>/assets</code>.
-        </p>
+        <p class="muted">Cria um card e salva no navegador (localStorage).</p>
 
         <form id="addForm" class="form">
           <div class="form-row">
-            <label>
-              Título
-              <input name="title" type="text" placeholder="Ex.: Aether Shift - Mockup 02" required />
+            <label>Título
+              <input name="title" type="text" required />
             </label>
 
-            <label>
-              Categoria
+            <label>Categoria
               <select name="category" required>
                 <option value="Aether Shift">Aether Shift</option>
                 <option value="Mizuryu">Mizuryu</option>
                 <option value="Tech">Tech</option>
-                <option value="Vôlei">Vôlei</option>
-                <option value="Arte">Arte</option>
-                <option value="Finanças">Finanças</option>
-                <option value="Comunidade">Comunidade</option>
                 <option value="Outros">Outros</option>
               </select>
             </label>
           </div>
 
           <div class="form-row">
-            <label>
-              Status
-              <input name="status" type="text" placeholder="Ex.: Em desenvolvimento" />
+            <label>Status
+              <input name="status" type="text" placeholder="Ex.: Em andamento" />
             </label>
 
-            <label>
-              Data (opcional)
-              <input name="date" type="text" placeholder="Ex.: Mar/2026" />
+            <label>Data (opcional)
+              <input name="date" type="text" placeholder="Ex.: 2026" />
             </label>
           </div>
 
-          <label>
-            Descrição (curta)
-            <textarea name="description" rows="3" placeholder="Resumo do item..." required></textarea>
+          <label>Descrição
+            <textarea name="description" rows="3" required></textarea>
           </label>
 
-          <label>
-            Pontos (um por linha)
-            <textarea name="bullets" rows="4" placeholder="Ex.:&#10;Ideia central do item&#10;O que ele entrega"></textarea>
+          <label>Pontos (um por linha)
+            <textarea name="bullets" rows="4"></textarea>
           </label>
 
-          <label>
-            Imagem
+          <label>Imagem
             <input name="image" type="file" accept="image/*" required />
           </label>
 
           <div class="form-actions">
-            <button class="btn" type="submit">Adicionar na galeria</button>
+            <button class="btn" type="submit">Adicionar</button>
             <button class="btn btn-ghost" type="button" id="exportBtn">Exportar JSON</button>
-            <button class="btn btn-ghost" type="button" id="clearBtn">Limpar itens adicionados</button>
+            <button class="btn btn-ghost" type="button" id="clearBtn">Limpar adicionados</button>
           </div>
         </form>
       </div>
 
-      <!-- Controles PRO -->
+      <!-- Toolbar -->
       <div class="explore-toolbar">
         <div class="filter-bar" id="filterBar" aria-label="Filtros"></div>
 
         <div class="explore-controls">
           <label class="sr-only" for="searchInput">Buscar</label>
-          <input id="searchInput" class="input" type="search" placeholder="Buscar na galeria..." />
+          <input id="searchInput" class="input" type="search" placeholder="Buscar..." />
 
           <label class="sr-only" for="sortSelect">Ordenar</label>
           <select id="sortSelect" class="input">
@@ -710,19 +602,18 @@
           </select>
 
           <button class="filter-btn" id="favoritesToggle" type="button" aria-pressed="false">Favoritos</button>
-
           <div class="muted" id="counter"></div>
         </div>
       </div>
 
-      <div class="gallery-grid" id="gallery" aria-label="Galeria interativa"></div>
+      <div class="gallery-grid" id="gallery" aria-label="Galeria"></div>
     </section>
 
     <!-- TIMELINE -->
     <section id="timeline" class="section container">
       <div class="section-head">
         <h2>Timeline</h2>
-        <p class="muted">Linha do tempo com marcos (marca, tech e performance).</p>
+        <p class="muted">Marcos e evolução.</p>
       </div>
       <div class="timeline" id="timelineList"></div>
     </section>
@@ -731,68 +622,63 @@
     <section id="sobre" class="section container">
       <div class="section-head">
         <h2>Sobre</h2>
-        <p class="muted">Mentalidade, direção e execução.</p>
+        <p class="muted">Um pouco sobre mim.</p>
       </div>
 
       <div class="two-col">
         <div class="card">
           <div class="about-photos">
-            <img class="about-photo" src="assets/necklas-portrait.jpg" alt="Foto de Matheus (Necklas)" loading="lazy" />
-            <img class="about-photo" src="assets/necklas-night.jpg" alt="Foto lifestyle de Matheus (Necklas)" loading="lazy" />
+            <img class="about-photo" src="assets/necklas-portrait.jpg" alt="Retrato" loading="lazy" />
+            <img class="about-photo" src="assets/necklas-night.jpg" alt="Lifestyle" loading="lazy" />
           </div>
 
           <h3>Quem eu sou</h3>
           <p class="muted">
-            Sou um jovem empreendedor em construção. Estou no início, mas com mentalidade voltada para criação,
-            autonomia e crescimento. O objetivo é construir marcas e projetos com impacto real.
+            Sou um jovem empreendedor em construção. Tenho foco em criação, autonomia e execução.
+            Quero construir marcas e projetos com impacto real.
           </p>
         </div>
 
         <div class="card">
-          <h3>O que estou desenvolvendo agora</h3>
+          <h3>Foco atual</h3>
           <ul class="list">
-            <li><strong>Aether Shift:</strong> identidade + Drop 01.</li>
-            <li><strong>Mizuryu:</strong> conceito do time e visão de longo prazo.</li>
-            <li><strong>Tech:</strong> base em JavaScript para criar projetos próprios.</li>
-            <li><strong>Vôlei:</strong> performance, disciplina e evolução constante.</li>
+            <li>Aether Shift — identidade + Drop 01.</li>
+            <li>Mizuryu — conceito do time e visão de longo prazo.</li>
+            <li>JavaScript — evolução por projetos.</li>
           </ul>
         </div>
       </div>
     </section>
 
-    <!-- CONTATO (Formspree) -->
+    <!-- CONTATO (mail-to form que funciona sempre) -->
     <section id="contato" class="section container">
       <div class="section-head">
         <h2>Contato</h2>
-        <p class="muted">Formulário real (Formspree) + contato direto.</p>
+        <p class="muted">Envie uma mensagem (abre seu e-mail já preenchido).</p>
       </div>
 
       <div class="two-col">
         <div class="card">
-          <h3>Enviar mensagem</h3>
+          <h3>Mensagem</h3>
 
-          <!-- Troque YOUR_FORMSPREE_ID pelo ID do seu form no Formspree -->
-          <form id="contactForm" class="form" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST">
+          <form id="contactForm" class="form">
             <div class="form-row">
-              <label>
-                Nome
+              <label>Nome
                 <input name="name" type="text" required />
               </label>
 
-              <label>
-                E-mail
+              <label>Seu e-mail
                 <input name="email" type="email" required />
               </label>
             </div>
 
-            <label>
-              Mensagem
+            <label>Mensagem
               <textarea name="message" rows="5" required></textarea>
             </label>
 
             <div class="form-actions">
-              <button class="btn" type="submit">Enviar</button>
-              <a class="btn btn-ghost" href="mailto:necklas.contact@gmail.com">Prefiro por e-mail</a>
+              <button class="btn" type="submit">Abrir e-mail</button>
+              <a class="btn btn-ghost" href="mailto:necklas.contact@gmail.com">Prefiro enviar direto</a>
             </div>
 
             <p class="muted" id="contactStatus" style="margin-top:10px;"></p>
@@ -806,10 +692,6 @@
             Instagram: <a class="link" href="https://instagram.com/necklas01" target="_blank" rel="noreferrer">@necklas01</a><br />
             GitHub: <a class="link" href="https://github.com/NecklazTheOffice" target="_blank" rel="noreferrer">NecklazTheOffice</a>
           </p>
-
-          <p class="muted" style="margin-top:10px;">
-            Dica: quando você comprar domínio, a gente configura como <code>necklas.com.br</code> (ou <code>aethershift.com.br</code>) com hospedagem grátis.
-          </p>
         </div>
       </div>
     </section>
@@ -820,16 +702,13 @@
 
       <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
         <button class="modal-close" type="button" data-close aria-label="Fechar">×</button>
-
         <img class="modal-img" id="modalImg" alt="" />
 
         <div class="modal-body">
           <p class="modal-meta" id="modalMeta"></p>
           <h3 id="modalTitle"></h3>
           <p class="muted" id="modalDesc"></p>
-
           <ul class="list" id="modalList"></ul>
-
           <div class="modal-links" id="modalLinks"></div>
           <div class="modal-admin" id="modalAdmin"></div>
         </div>
@@ -843,7 +722,7 @@
       <aside class="drawer-panel" role="dialog" aria-modal="true" aria-label="Carrinho">
         <div class="drawer-head">
           <h3 style="margin:0;">Carrinho (simulado)</h3>
-          <button class="carousel-btn" type="button" data-cart-close aria-label="Fechar carrinho">×</button>
+          <button class="carousel-btn" type="button" data-cart-close aria-label="Fechar">×</button>
         </div>
 
         <div class="drawer-body">
@@ -859,9 +738,7 @@
             <button class="btn btn-ghost danger" type="button" id="cartClearBtn">Limpar</button>
           </div>
 
-          <p class="muted" style="margin-top:10px;">
-            Checkout em breve. Por enquanto, você pode gerar um pedido por e-mail.
-          </p>
+          <p class="muted" style="margin-top:10px;">Checkout em breve. Por enquanto é UX.</p>
         </div>
       </aside>
     </div>

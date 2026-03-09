@@ -1,10 +1,12 @@
-// =====================
-// Base
-// =====================
+/* =========================
+   Necklas Portfolio - script.js (final)
+   ========================= */
+
+/* Base */
 const yearEl = document.getElementById("year");
 if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
-// Menu mobile
+/* Menu mobile */
 const menuBtn = document.getElementById("menuBtn");
 const menu = document.getElementById("menu");
 if (menuBtn && menu) {
@@ -21,103 +23,99 @@ if (menuBtn && menu) {
   });
 }
 
-// =====================
-// Helpers
-// =====================
+/* Helpers */
 function slugify(str) {
-  return String(str)
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/\s+/g, "-")
-    .slice(0, 60);
+  return String(str).toLowerCase().trim().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").slice(0, 60);
 }
-
 function moneyBRL(n) {
-  try {
-    return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(n);
-  } catch {
-    return `R$ ${Number(n).toFixed(2)}`;
-  }
+  try { return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(n); }
+  catch { return `R$ ${Number(n).toFixed(2)}`; }
 }
-
+function safeJSONParse(raw, fallback) { try { return JSON.parse(raw) ?? fallback; } catch { return fallback; } }
+function loadJSON(key, fallback) {
+  const raw = localStorage.getItem(key);
+  if (!raw) return fallback;
+  return safeJSONParse(raw, fallback);
+}
+function saveJSON(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
 function svgPlaceholder(title, subtitle = "Sem imagem") {
   const safeTitle = String(title).replace(/[<>&"]/g, "");
   const safeSub = String(subtitle).replace(/[<>&"]/g, "");
   const svg = `
   <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750">
-    <defs>
-      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stop-color="#7c5cff" stop-opacity="0.65"/>
-        <stop offset="1" stop-color="#22c55e" stop-opacity="0.35"/>
-      </linearGradient>
-    </defs>
+    <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7c5cff" stop-opacity="0.65"/>
+      <stop offset="1" stop-color="#22c55e" stop-opacity="0.35"/>
+    </linearGradient></defs>
     <rect width="100%" height="100%" fill="#0b1220"/>
     <rect x="40" y="40" width="1120" height="670" rx="36" fill="url(#g)" opacity="0.35"/>
-    <text x="90" y="340" fill="rgba(255,255,255,0.92)" font-size="64" font-family="Arial, sans-serif" font-weight="700">
-      ${safeTitle}
-    </text>
-    <text x="90" y="410" fill="rgba(255,255,255,0.70)" font-size="30" font-family="Arial, sans-serif">
-      ${safeSub}
-    </text>
+    <text x="90" y="340" fill="rgba(255,255,255,0.92)" font-size="64" font-family="Arial" font-weight="700">${safeTitle}</text>
+    <text x="90" y="410" fill="rgba(255,255,255,0.70)" font-size="30" font-family="Arial">${safeSub}</text>
   </svg>`;
   return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
 }
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onerror = reject;
+    r.onload = () => resolve(String(r.result));
+    r.readAsDataURL(file);
+  });
+}
 
-// =====================
-// Gallery PRO + Upload + Modal + Favorites + URL state
-// =====================
+/* =========================
+   Theme (isolated)
+   ========================= */
+(() => {
+  const themeBtn = document.getElementById("themeToggle");
+  const themeStateEl = document.getElementById("themeState");
+  const THEME_KEY = "necklas_theme_v1";
+  const mqLight = window.matchMedia?.("(prefers-color-scheme: light)");
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    if (metaTheme) metaTheme.setAttribute("content", theme === "light" ? "#f6f7fb" : "#0b1220");
+    if (themeStateEl) themeStateEl.textContent = theme === "light" ? "Claro" : "Escuro";
+  }
+
+  function getTheme() {
+    const saved = localStorage.getItem(THEME_KEY);
+    if (saved === "light" || saved === "dark") return saved;
+    return mqLight?.matches ? "light" : "dark";
+  }
+
+  applyTheme(getTheme());
+
+  themeBtn?.addEventListener("click", () => {
+    const current = document.documentElement.getAttribute("data-theme") || "dark";
+    const next = current === "dark" ? "light" : "dark";
+    localStorage.setItem(THEME_KEY, next);
+    applyTheme(next);
+  });
+
+  mqLight?.addEventListener?.("change", () => {
+    const saved = localStorage.getItem(THEME_KEY);
+    if (saved === "light" || saved === "dark") return;
+    applyTheme(getTheme());
+  });
+})();
+
+/* =========================
+   Favorites + Gallery PRO
+   ========================= */
 const STORAGE_KEY = "necklas_gallery_items_v2";
 const FAV_KEY = "necklas_favs_v1";
-
-const galleryEl = document.getElementById("gallery");
-const filterBarEl = document.getElementById("filterBar");
-const counterEl = document.getElementById("counter");
-const searchInputEl = document.getElementById("searchInput");
-const sortSelectEl = document.getElementById("sortSelect");
-const favoritesToggleEl = document.getElementById("favoritesToggle");
-
-const addFormEl = document.getElementById("addForm");
-const exportBtn = document.getElementById("exportBtn");
-const clearBtn = document.getElementById("clearBtn");
-
-// Modal
-const modalEl = document.getElementById("modal");
-const modalImgEl = document.getElementById("modalImg");
-const modalMetaEl = document.getElementById("modalMeta");
-const modalTitleEl = document.getElementById("modalTitle");
-const modalDescEl = document.getElementById("modalDesc");
-const modalListEl = document.getElementById("modalList");
-const modalLinksEl = document.getElementById("modalLinks");
-const modalAdminEl = document.getElementById("modalAdmin");
-
-function loadJSON(key, fallback) {
-  try {
-    const raw = localStorage.getItem(key);
-    if (!raw) return fallback;
-    return JSON.parse(raw);
-  } catch {
-    return fallback;
-  }
-}
-function saveJSON(key, value) {
-  localStorage.setItem(key, JSON.stringify(value));
-}
 
 let favorites = new Set(loadJSON(FAV_KEY, []));
 function saveFavs() { saveJSON(FAV_KEY, [...favorites]); }
 function isFav(id) { return favorites.has(id); }
-function toggleFav(id) {
-  if (favorites.has(id)) favorites.delete(id);
-  else favorites.add(id);
-  saveFavs();
-}
+function toggleFav(id) { favorites.has(id) ? favorites.delete(id) : favorites.add(id); saveFavs(); }
 
 let customItems = loadJSON(STORAGE_KEY, []);
 if (!Array.isArray(customItems)) customItems = [];
 
 const baseItems = [
-  // Aether Shift
   {
     id: "aether-shift-logo-sa",
     title: "Aether Shift — Logo (SA)",
@@ -129,7 +127,7 @@ const baseItems = [
     description: "Monograma principal (SA). Minimalismo premium e assinatura da marca.",
     bullets: ["Aplicação premium: bordado pequeno/peito/etiqueta/boné.", "Reconhecimento sem poluição visual."],
     links: [],
-    custom: false
+    custom: false,
   },
   {
     id: "aether-shift-wordmark",
@@ -140,22 +138,22 @@ const baseItems = [
     createdAt: 9,
     image: "assets/aether-shift-wordmark.jpg",
     description: "Nome da marca para reforço oficial (campanha, embalagem, assinatura).",
-    bullets: ["Reforça marca quando o símbolo não basta.", "Base de consistência para o digital."],
+    bullets: ["Reforça marca quando o símbolo não basta.", "Base de consistência no digital."],
     links: [],
-    custom: false
+    custom: false,
   },
   {
-    id: "aether-shift-cap",
-    title: "Aether Shift — Boné (mockup)",
+    id: "aether-shift-tee-mockups",
+    title: "Aether Shift — Camiseta (mockups)",
     category: "Aether Shift",
     status: "Mockup",
     date: "2026",
     createdAt: 8,
-    image: "assets/aether-shift-cap.jpg",
-    description: "Assinatura discreta: SA na frente + nome em pontos secundários.",
-    bullets: ["Minimalista e reconhecível.", "Peça de presença no dia a dia."],
+    image: "assets/aether-shift-tee-mockups.jpg",
+    description: "Camiseta base do Drop 01 com variações (minimal/destaque).",
+    bullets: ["Uniforme do construtor: simples e forte.", "Define assinatura visual da marca."],
     links: [],
-    custom: false
+    custom: false,
   },
   {
     id: "aether-shift-hoodie-mockups",
@@ -165,23 +163,23 @@ const baseItems = [
     date: "2026",
     createdAt: 7,
     image: "assets/aether-shift-hoodie-mockups.jpg",
-    description: "Direção do Drop 01: clean com SA e variações com wordmark.",
+    description: "Direção do Drop 01: clean com SA e wordmark estratégico.",
     bullets: ["Peça-chave do drop (presença).", "Marca bem posicionada, sem exagero."],
     links: [],
-    custom: false
+    custom: false,
   },
   {
-    id: "aether-shift-tee-mockups",
-    title: "Aether Shift — Camiseta (mockups)",
+    id: "aether-shift-cap",
+    title: "Aether Shift — Boné (mockup)",
     category: "Aether Shift",
     status: "Mockup",
     date: "2026",
     createdAt: 6,
-    image: "assets/aether-shift-tee-mockups.jpg",
-    description: "Camiseta base do Drop 01 com variações de assinatura (minimal/destaque).",
-    bullets: ["Uniforme do construtor: simples e forte.", "Define a assinatura visual da marca."],
+    image: "assets/aether-shift-cap.jpg",
+    description: "Assinatura discreta: SA na frente + nome em pontos secundários.",
+    bullets: ["Minimalista e reconhecível.", "Peça de presença no dia a dia."],
     links: [],
-    custom: false
+    custom: false,
   },
   {
     id: "aether-shift-backprint",
@@ -194,10 +192,8 @@ const baseItems = [
     description: "Story piece: frente limpa, costas comunicam (narrativa do drop).",
     bullets: ["Perfeita para campanha/foto.", "Cria conversa e storytelling."],
     links: [],
-    custom: false
+    custom: false,
   },
-
-  // Mizuryu (placeholder)
   {
     id: "mizuryu-conceito",
     title: "Mizuryu — Dragão da Água (conceito)",
@@ -206,45 +202,46 @@ const baseItems = [
     date: "Futuro",
     createdAt: 4,
     image: svgPlaceholder("Mizuryu", "Time • disciplina • evolução"),
-    description: "Projeto de time de vôlei conectado ao ecossistema: alto desempenho + identidade.",
-    bullets: ["Dragão = poder, ambição e domínio.", "Água = adaptação, fluidez e movimento constante."],
+    description: "Projeto de time de vôlei conectado ao ecossistema.",
+    bullets: ["Dragão = poder e ambição.", "Água = adaptação e movimento."],
     links: [{ label: "Contato", url: "mailto:necklas.contact@gmail.com?subject=Mizuryu%20-%20Contato" }],
-    custom: false
+    custom: false,
   },
-
-  // Tech (placeholder)
-  {
-    id: "portfolio-site",
-    title: "Portfólio — Website",
-    category: "Tech",
-    status: "Ativo",
-    date: "2026",
-    createdAt: 3,
-    image: svgPlaceholder("Portfólio", "HTML • CSS • JS"),
-    description: "Este site: galeria interativa + modal + upload + carrinho simulado + brand kit.",
-    bullets: ["Responsivo e simples de manter.", "Publicação via GitHub Pages."],
-    links: [{ label: "GitHub", url: "https://github.com/NecklazTheOffice" }],
-    custom: false
-  }
 ];
 
-const state = {
-  filter: "Todos",
-  search: "",
-  sort: "featured",
-  favoritesOnly: false
-};
+const state = { filter: "Todos", search: "", sort: "featured", favoritesOnly: false };
+
+const galleryEl = document.getElementById("gallery");
+const filterBarEl = document.getElementById("filterBar");
+const counterEl = document.getElementById("counter");
+const searchInputEl = document.getElementById("searchInput");
+const sortSelectEl = document.getElementById("sortSelect");
+const favoritesToggleEl = document.getElementById("favoritesToggle");
+
+const addFormEl = document.getElementById("addForm");
+const exportBtn = document.getElementById("exportBtn");
+const clearBtn = document.getElementById("clearBtn");
+
+/* Modal */
+const modalEl = document.getElementById("modal");
+const modalImgEl = document.getElementById("modalImg");
+const modalMetaEl = document.getElementById("modalMeta");
+const modalTitleEl = document.getElementById("modalTitle");
+const modalDescEl = document.getElementById("modalDesc");
+const modalListEl = document.getElementById("modalList");
+const modalLinksEl = document.getElementById("modalLinks");
+const modalAdminEl = document.getElementById("modalAdmin");
 
 function applyUrlState() {
   const url = new URL(location.href);
   const f = url.searchParams.get("filter");
   const q = url.searchParams.get("q");
-  const sort = url.searchParams.get("sort");
+  const s = url.searchParams.get("sort");
   const fav = url.searchParams.get("fav");
 
   if (f) state.filter = f;
   if (q) state.search = q;
-  if (sort) state.sort = sort;
+  if (s) state.sort = s;
   if (fav === "1") state.favoritesOnly = true;
 
   if (searchInputEl) searchInputEl.value = state.search;
@@ -255,27 +252,18 @@ function applyUrlState() {
 function syncUrl() {
   const url = new URL(location.href);
 
-  if (state.filter && state.filter !== "Todos") url.searchParams.set("filter", state.filter);
-  else url.searchParams.delete("filter");
-
-  if (state.search) url.searchParams.set("q", state.search);
-  else url.searchParams.delete("q");
-
-  if (state.sort && state.sort !== "featured") url.searchParams.set("sort", state.sort);
-  else url.searchParams.delete("sort");
-
-  if (state.favoritesOnly) url.searchParams.set("fav", "1");
-  else url.searchParams.delete("fav");
+  state.filter !== "Todos" ? url.searchParams.set("filter", state.filter) : url.searchParams.delete("filter");
+  state.search ? url.searchParams.set("q", state.search) : url.searchParams.delete("q");
+  state.sort !== "featured" ? url.searchParams.set("sort", state.sort) : url.searchParams.delete("sort");
+  state.favoritesOnly ? url.searchParams.set("fav", "1") : url.searchParams.delete("fav");
 
   history.replaceState(null, "", url);
 }
 
-function allItems() {
-  return [...baseItems, ...customItems];
-}
+function allItems() { return [...baseItems, ...customItems]; }
 
 function getCategories() {
-  const cats = Array.from(new Set(allItems().map((i) => i.category)));
+  const cats = Array.from(new Set(allItems().map(i => i.category)));
   return ["Todos", ...cats];
 }
 
@@ -290,14 +278,12 @@ function renderFilters() {
     btn.type = "button";
     btn.textContent = cat;
     btn.setAttribute("aria-pressed", String(cat === state.filter));
-
     btn.addEventListener("click", () => {
       state.filter = cat;
       renderFilters();
       renderGallery();
       syncUrl();
     });
-
     filterBarEl.appendChild(btn);
   });
 }
@@ -305,32 +291,32 @@ function renderFilters() {
 function matchesSearch(item, query) {
   const q = query.toLowerCase();
   return [item.title, item.description, item.category, item.status, item.date]
-    .some((v) => String(v || "").toLowerCase().includes(q));
+    .some(v => String(v || "").toLowerCase().includes(q));
 }
 
 function getFilteredItems() {
   let items = allItems();
+  if (state.filter !== "Todos") items = items.filter(i => i.category === state.filter);
+  if (state.favoritesOnly) items = items.filter(i => isFav(i.id));
+  if (state.search) items = items.filter(i => matchesSearch(i, state.search));
 
-  if (state.filter !== "Todos") items = items.filter((i) => i.category === state.filter);
-  if (state.favoritesOnly) items = items.filter((i) => isFav(i.id));
-  if (state.search) items = items.filter((i) => matchesSearch(i, state.search));
-
-  if (state.sort === "newest") items = [...items].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-  if (state.sort === "titleAsc") items = [...items].sort((a, b) => a.title.localeCompare(b.title));
-  if (state.sort === "titleDesc") items = [...items].sort((a, b) => b.title.localeCompare(a.title));
-
+  if (state.sort === "newest") items = [...items].sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+  if (state.sort === "titleAsc") items = [...items].sort((a,b) => a.title.localeCompare(b.title));
+  if (state.sort === "titleDesc") items = [...items].sort((a,b) => b.title.localeCompare(a.title));
   return items;
 }
 
-function renderGallery() {
-  // Show/hide Aether lookbook inside Explore
+function updateExploreCoverflowVisibility() {
   const wrap = document.getElementById("aetherStoryWrap");
-  if (wrap) {
-    wrap.hidden = state.filter !== "Aether Shift";
-    if (!wrap.hidden) initCoverflowsInside(wrap);
-  }
+  if (!wrap) return;
+  wrap.hidden = state.filter !== "Aether Shift";
+}
+
+function renderGallery() {
+  updateExploreCoverflowVisibility();
 
   if (!galleryEl) return;
+
   const filtered = getFilteredItems();
   galleryEl.innerHTML = "";
   if (counterEl) counterEl.textContent = `${filtered.length} item(ns)`;
@@ -339,11 +325,10 @@ function renderGallery() {
     const btn = document.createElement("button");
     btn.className = "gallery-card";
     btn.type = "button";
-    btn.setAttribute("aria-label", `Abrir detalhes: ${item.title}`);
 
     const img = document.createElement("img");
     img.className = "gallery-thumb";
-    img.src = item.image;
+    img.src = item.image || svgPlaceholder(item.title);
     img.alt = item.title;
 
     const title = document.createElement("h3");
@@ -352,9 +337,8 @@ function renderGallery() {
 
     const meta = document.createElement("div");
     meta.className = "gallery-meta";
-    const favPill = isFav(item.id) ? `<span class="pill pill-fav">★</span>` : "";
     meta.innerHTML = `
-      ${favPill}
+      ${isFav(item.id) ? `<span class="pill pill-fav">★</span>` : ""}
       <span class="pill">${item.category}</span>
       <span class="pill">${item.status || "—"}</span>
     `;
@@ -364,11 +348,7 @@ function renderGallery() {
     desc.style.margin = "0";
     desc.textContent = item.description || "";
 
-    btn.appendChild(img);
-    btn.appendChild(title);
-    btn.appendChild(meta);
-    btn.appendChild(desc);
-
+    btn.append(img, title, meta, desc);
     btn.addEventListener("click", () => openModal(item.id));
     galleryEl.appendChild(btn);
   });
@@ -376,21 +356,21 @@ function renderGallery() {
 
 function openModal(itemId) {
   if (!modalEl) return;
-  const item = allItems().find((i) => i.id === itemId);
+  const item = allItems().find(i => i.id === itemId);
   if (!item) return;
 
   modalEl.classList.add("open");
   modalEl.setAttribute("aria-hidden", "false");
   document.body.style.overflow = "hidden";
 
-  if (modalImgEl) { modalImgEl.src = item.image; modalImgEl.alt = item.title; }
+  if (modalImgEl) { modalImgEl.src = item.image || svgPlaceholder(item.title); modalImgEl.alt = item.title; }
   if (modalMetaEl) modalMetaEl.textContent = `${item.category} • ${item.status || "—"}${item.date ? " • " + item.date : ""}`;
   if (modalTitleEl) modalTitleEl.textContent = item.title;
   if (modalDescEl) modalDescEl.textContent = item.description || "";
 
   if (modalListEl) {
     modalListEl.innerHTML = "";
-    (item.bullets || []).forEach((b) => {
+    (item.bullets || []).forEach(b => {
       const li = document.createElement("li");
       li.textContent = b;
       modalListEl.appendChild(li);
@@ -403,6 +383,7 @@ function openModal(itemId) {
     const favBtn = document.createElement("button");
     favBtn.type = "button";
     favBtn.className = "modal-link-btn";
+
     const setText = () => favBtn.textContent = isFav(item.id) ? "Remover dos favoritos" : "Salvar nos favoritos";
     setText();
 
@@ -412,6 +393,7 @@ function openModal(itemId) {
       renderGallery();
       syncUrl();
     });
+
     modalLinksEl.appendChild(favBtn);
 
     (item.links || []).forEach((l) => {
@@ -433,7 +415,7 @@ function openModal(itemId) {
       del.className = "btn btn-ghost danger";
       del.textContent = "Excluir este item";
       del.addEventListener("click", () => {
-        customItems = customItems.filter((x) => x.id !== item.id);
+        customItems = customItems.filter(x => x.id !== item.id);
         saveJSON(STORAGE_KEY, customItems);
         closeModal();
         renderFilters();
@@ -454,23 +436,12 @@ function closeModal() {
 
 function setupModalEvents() {
   if (!modalEl) return;
-
   modalEl.addEventListener("click", (e) => {
     const t = e.target;
     if (t && t.hasAttribute("data-close")) closeModal();
   });
-
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && modalEl.classList.contains("open")) closeModal();
-  });
-}
-
-function fileToDataUrl(file) {
-  return new Promise((resolve, reject) => {
-    const r = new FileReader();
-    r.onerror = reject;
-    r.onload = () => resolve(String(r.result));
-    r.readAsDataURL(file);
   });
 }
 
@@ -520,8 +491,7 @@ function exportJSON() {
   a.href = url;
   a.download = "necklas-galeria-export.json";
   document.body.appendChild(a);
-  a.click();
-  a.remove();
+  a.click(); a.remove();
   URL.revokeObjectURL(url);
 }
 
@@ -535,34 +505,27 @@ function clearCustomItems() {
   syncUrl();
 }
 
-// Inputs PRO
 searchInputEl?.addEventListener("input", () => {
   state.search = String(searchInputEl.value || "").trim();
-  renderGallery();
-  syncUrl();
+  renderGallery(); syncUrl();
 });
 sortSelectEl?.addEventListener("change", () => {
   state.sort = String(sortSelectEl.value || "featured");
-  renderGallery();
-  syncUrl();
+  renderGallery(); syncUrl();
 });
 favoritesToggleEl?.addEventListener("click", () => {
   state.favoritesOnly = !state.favoritesOnly;
   favoritesToggleEl.setAttribute("aria-pressed", String(state.favoritesOnly));
-  renderGallery();
-  syncUrl();
+  renderGallery(); syncUrl();
 });
 
-// Atalhos: filtro e open modal
+/* data-filter / data-open-item */
 document.addEventListener("click", (e) => {
   const el = e.target instanceof Element ? e.target.closest("[data-filter], [data-open-item]") : null;
   if (!el) return;
 
   const openId = el.getAttribute("data-open-item");
-  if (openId) {
-    openModal(openId);
-    return;
-  }
+  if (openId) { openModal(openId); return; }
 
   const filter = el.getAttribute("data-filter");
   if (filter) {
@@ -573,66 +536,30 @@ document.addEventListener("click", (e) => {
   }
 });
 
-// =====================
-// Timeline
-// =====================
-const timelineEl = document.getElementById("timelineList");
-const timeline = [
-  { date: "Agora", title: "Portfólio no ar (e evoluindo)", desc: "Manter atualizado e transformar ideias em entregas reais." },
-  { date: "Próximas semanas", title: "Mini-projetos JS consistentes", desc: "Criar e publicar repositórios (to-do, jogo, gerador de senha)." },
-  { date: "Curto prazo", title: "Aether Shift — Drop 01", desc: "Validar direção, fechar detalhes e estruturar execução." },
-  { date: "Curto/Médio prazo", title: "Mizuryu — identidade e estrutura", desc: "Definir proposta do time, identidade e evolução do projeto." },
-  { date: "Médio prazo", title: "Projeto digital próprio", desc: "Ferramenta/app/plataforma que resolva um problema real." },
-  { date: "Longo prazo", title: "Marca forte + equipe sustentada", desc: "Aether Shift e Mizuryu fortalecendo um ao outro." }
-];
-
-function renderTimeline() {
-  if (!timelineEl) return;
-  timelineEl.innerHTML = "";
-  timeline.forEach((t) => {
-    const item = document.createElement("div");
-    item.className = "t-item";
-    item.innerHTML = `
-      <div class="t-top">
-        <h3 class="t-title">${t.title}</h3>
-        <span class="t-date">${t.date}</span>
-      </div>
-      <p class="t-desc">${t.desc}</p>
-    `;
-    timelineEl.appendChild(item);
-  });
-}
-
-// =====================
-// Coverflow (autoplay toggle premium) - múltiplas instâncias
-// =====================
+/* =========================
+   Coverflow
+   ========================= */
 const coverflowInitSet = new WeakSet();
 
-function initCoverflowsInside(root) {
-  root.querySelectorAll("[data-coverflow]").forEach(initCoverflow);
-}
-
 function initCoverflow(root) {
-  if (coverflowInitSet.has(root)) return;
+  if (!root || coverflowInitSet.has(root)) return;
   coverflowInitSet.add(root);
 
   const viewport = root.querySelector("[data-cf-viewport]");
   const items = Array.from(viewport?.querySelectorAll(".coverflow-item") || []);
-  const prev = root.closest(".card, section, body")?.querySelector("[data-cf-prev]");
-  const next = root.closest(".card, section, body")?.querySelector("[data-cf-next]");
   const dotsWrap = root.querySelector("[data-cf-dots]");
-  const toggleBtn = root.closest(".card, section, body")?.querySelector("[data-cf-toggle]");
+  const prev = root.querySelector("[data-cf-prev]");
+  const next = root.querySelector("[data-cf-next]");
+  const toggleBtn = root.querySelector("[data-cf-toggle]");
 
   const key = root.getAttribute("data-cf-key") || "default";
   const AUTO_KEY = `necklas_coverflow_auto_${key}_v1`;
-
   const prefersReduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
 
   const fromStorage = localStorage.getItem(AUTO_KEY);
-  let autoEnabled =
-    fromStorage !== null ? fromStorage === "1" : (root.getAttribute("data-autoplay") === "true");
-
+  let autoEnabled = fromStorage !== null ? fromStorage === "1" : root.getAttribute("data-autoplay") === "true";
   if (prefersReduced) autoEnabled = false;
+
   if (!viewport || items.length === 0) return;
 
   let index = 0;
@@ -646,6 +573,18 @@ function initCoverflow(root) {
     off = mod(off, n);
     if (off > n / 2) off -= n;
     return off;
+  }
+
+  function initDots() {
+    if (!dotsWrap) return;
+    dotsWrap.innerHTML = "";
+    items.forEach((_, i) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "coverflow-dot";
+      b.addEventListener("click", () => { index = i; render(); });
+      dotsWrap.appendChild(b);
+    });
   }
 
   function render() {
@@ -663,7 +602,6 @@ function initCoverflow(root) {
       el.style.setProperty("--op", op);
       el.style.setProperty("--blur", `${blur}px`);
       el.style.setProperty("--z", z);
-
       el.classList.toggle("is-active", i === index);
     });
 
@@ -673,85 +611,14 @@ function initCoverflow(root) {
 
     if (toggleBtn) {
       toggleBtn.setAttribute("aria-pressed", String(autoEnabled));
-      toggleBtn.disabled = prefersReduced;
-
+      toggleBtn.disabled = !!prefersReduced;
       const stateEl = toggleBtn.querySelector("[data-cf-state]");
       if (stateEl) stateEl.textContent = autoEnabled ? "On" : "Off";
       if (prefersReduced && stateEl) stateEl.textContent = "Off";
     }
   }
 
-  function go(delta) {
-    index = mod(index + delta, items.length);
-    render();
-  }
-
-  // dots
-  if (dotsWrap) {
-    dotsWrap.innerHTML = "";
-    items.forEach((_, i) => {
-      const b = document.createElement("button");
-      b.type = "button";
-      b.className = "coverflow-dot";
-      b.addEventListener("click", () => {
-        index = i;
-        render();
-      });
-      dotsWrap.appendChild(b);
-    });
-  }
-
-  // setas
-  prev?.addEventListener("click", () => go(-1));
-  next?.addEventListener("click", () => go(1));
-
-  // clique: 1º centraliza, 2º abre modal
-  items.forEach((el, i) => {
-    el.addEventListener("click", (e) => {
-      if (i !== index) {
-        e.preventDefault();
-        e.stopPropagation();
-        index = i;
-        render();
-        return;
-      }
-      const openId = el.getAttribute("data-open-item");
-      if (openId) {
-        e.preventDefault();
-        e.stopPropagation();
-        openModal(openId);
-      }
-    });
-  });
-
-  // drag/swipe
-  let startX = 0;
-  let dragging = false;
-
-  viewport.addEventListener("pointerdown", (e) => {
-    dragging = true;
-    startX = e.clientX;
-    viewport.setPointerCapture?.(e.pointerId);
-    stopAuto();
-  });
-
-  viewport.addEventListener("pointermove", (e) => {
-    if (!dragging) return;
-    const dx = e.clientX - startX;
-    if (Math.abs(dx) > 55) {
-      go(dx > 0 ? -1 : 1);
-      startX = e.clientX;
-    }
-  });
-
-  viewport.addEventListener("pointerup", () => {
-    dragging = false;
-    startAuto();
-  });
-  viewport.addEventListener("pointercancel", () => {
-    dragging = false;
-    startAuto();
-  });
+  function go(delta) { index = mod(index + delta, items.length); render(); }
 
   function startAuto() {
     if (!autoEnabled) return;
@@ -765,25 +632,55 @@ function initCoverflow(root) {
     timer = null;
   }
 
+  prev?.addEventListener("click", () => go(-1));
+  next?.addEventListener("click", () => go(1));
+
   toggleBtn?.addEventListener("click", () => {
     if (prefersReduced) return;
     autoEnabled = !autoEnabled;
     localStorage.setItem(AUTO_KEY, autoEnabled ? "1" : "0");
-    if (autoEnabled) startAuto();
-    else stopAuto();
+    autoEnabled ? startAuto() : stopAuto();
     render();
   });
+
+  items.forEach((el, i) => {
+    el.addEventListener("click", (e) => {
+      if (i !== index) { e.preventDefault(); e.stopPropagation(); index = i; render(); return; }
+      const openId = el.getAttribute("data-open-item");
+      if (openId) { e.preventDefault(); e.stopPropagation(); openModal(openId); }
+    });
+  });
+
+  // drag/swipe
+  let startX = 0;
+  let dragging = false;
+  viewport.addEventListener("pointerdown", (e) => {
+    dragging = true;
+    startX = e.clientX;
+    viewport.setPointerCapture?.(e.pointerId);
+    stopAuto();
+  });
+  viewport.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - startX;
+    if (Math.abs(dx) > 55) { go(dx > 0 ? -1 : 1); startX = e.clientX; }
+  });
+  viewport.addEventListener("pointerup", () => { dragging = false; startAuto(); });
+  viewport.addEventListener("pointercancel", () => { dragging = false; startAuto(); });
 
   root.addEventListener("mouseenter", stopAuto);
   root.addEventListener("mouseleave", startAuto);
 
+  initDots();
   render();
   startAuto();
 }
 
-// =====================
-// Carrinho (simulado)
-// =====================
+document.querySelectorAll("[data-coverflow]").forEach(initCoverflow);
+
+/* =========================
+   Cart (drawer)
+   ========================= */
 const CART_KEY = "necklas_cart_v1";
 let cart = loadJSON(CART_KEY, []);
 if (!Array.isArray(cart)) cart = [];
@@ -797,21 +694,14 @@ const cartClearBtn = document.getElementById("cartClearBtn");
 const cartEmailBtn = document.getElementById("cartEmailBtn");
 
 function saveCart() { saveJSON(CART_KEY, cart); }
-
-function cartCount() {
-  return cart.reduce((acc, it) => acc + it.qty, 0);
-}
-
-function cartTotal() {
-  return cart.reduce((acc, it) => acc + it.qty * it.price, 0);
-}
+function cartCount() { return cart.reduce((acc, it) => acc + it.qty, 0); }
+function cartTotal() { return cart.reduce((acc, it) => acc + it.qty * it.price, 0); }
 
 function updateCartUI() {
   if (cartCountEl) cartCountEl.textContent = String(cartCount());
   if (!cartItemsEl || !cartTotalEl) return;
 
   cartItemsEl.innerHTML = "";
-
   if (cart.length === 0) {
     cartItemsEl.innerHTML = `<p class="muted">Seu carrinho está vazio.</p>`;
     cartTotalEl.textContent = moneyBRL(0);
@@ -829,7 +719,6 @@ function updateCartUI() {
           <span class="pill">${it.size}</span>
         </div>
         <div class="muted">${moneyBRL(it.price)}</div>
-
         <div class="cart-row-controls">
           <button class="carousel-btn" type="button" data-cart-dec="${it.key}">-</button>
           <span class="muted">Qtd: <strong>${it.qty}</strong></span>
@@ -850,7 +739,6 @@ function openCart() {
   cartDrawer.setAttribute("aria-hidden", "false");
   document.body.style.overflow = "hidden";
 }
-
 function closeCart() {
   if (!cartDrawer) return;
   cartDrawer.classList.remove("open");
@@ -863,27 +751,10 @@ function addToCart({ id, name, price, image, size }) {
   const existing = cart.find((x) => x.key === key);
   if (existing) existing.qty += 1;
   else cart.unshift({ key, id, name, price, image, size, qty: 1 });
-
   saveCart();
   updateCartUI();
   openCart();
 }
-
-document.addEventListener("click", (e) => {
-  const el = e.target instanceof Element ? e.target.closest("[data-add-to-cart]") : null;
-  if (!el) return;
-
-  const id = el.getAttribute("data-id");
-  const name = el.getAttribute("data-name");
-  const price = Number(el.getAttribute("data-price") || "0");
-  const image = el.getAttribute("data-image") || svgPlaceholder("Produto");
-  if (!id || !name) return;
-
-  const sizeSel = document.querySelector(`[data-size-for="${id}"]`);
-  const size = (sizeSel && sizeSel.value) ? sizeSel.value : "Único";
-
-  addToCart({ id, name, price, image, size });
-});
 
 cartBtn?.addEventListener("click", openCart);
 
@@ -897,22 +768,9 @@ cartDrawer?.addEventListener("click", (e) => {
   const dec = t.closest("[data-cart-dec]")?.getAttribute("data-cart-dec");
   const rm = t.closest("[data-cart-rm]")?.getAttribute("data-cart-rm");
 
-  if (inc) {
-    const it = cart.find((x) => x.key === inc);
-    if (it) it.qty += 1;
-    saveCart(); updateCartUI();
-  }
-
-  if (dec) {
-    const it = cart.find((x) => x.key === dec);
-    if (it) it.qty = Math.max(1, it.qty - 1);
-    saveCart(); updateCartUI();
-  }
-
-  if (rm) {
-    cart = cart.filter((x) => x.key !== rm);
-    saveCart(); updateCartUI();
-  }
+  if (inc) { const it = cart.find((x) => x.key === inc); if (it) it.qty += 1; saveCart(); updateCartUI(); }
+  if (dec) { const it = cart.find((x) => x.key === dec); if (it) it.qty = Math.max(1, it.qty - 1); saveCart(); updateCartUI(); }
+  if (rm) { cart = cart.filter((x) => x.key !== rm); saveCart(); updateCartUI(); }
 });
 
 cartClearBtn?.addEventListener("click", () => {
@@ -925,7 +783,6 @@ cartClearBtn?.addEventListener("click", () => {
 
 cartEmailBtn?.addEventListener("click", () => {
   if (cart.length === 0) return;
-
   const lines = [
     "Pedido (simulado) — Aether Shift",
     "",
@@ -933,86 +790,88 @@ cartEmailBtn?.addEventListener("click", () => {
     "",
     `Total: ${moneyBRL(cartTotal())}`,
     "",
-    "Obs: este pedido foi gerado pelo portfólio (checkout em breve)."
+    "Obs: este pedido foi gerado pelo portfólio (checkout em breve).",
   ];
-
   const subject = "Aether Shift — Pedido (simulado)";
   const mailto =
-    `mailto:necklas.contact@gmail.com` +
-    `?subject=${encodeURIComponent(subject)}` +
-    `&body=${encodeURIComponent(lines.join("\n"))}`;
-
+    `mailto:necklas.contact@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join("\n"))}`;
   window.location.href = mailto;
 });
 
-// =====================
-// Contato (Formspree via fetch)
-// =====================
+document.addEventListener("click", (e) => {
+  const el = e.target instanceof Element ? e.target.closest("[data-add-to-cart]") : null;
+  if (!el) return;
+
+  const id = el.getAttribute("data-id");
+  const name = el.getAttribute("data-name");
+  const price = Number(el.getAttribute("data-price") || "0");
+  const image = el.getAttribute("data-image") || svgPlaceholder("Produto");
+  if (!id || !name) return;
+
+  const sizeSel = document.querySelector(`[data-size-for="${id}"]`);
+  const size = (sizeSel && "value" in sizeSel && sizeSel.value) ? sizeSel.value : "Único";
+
+  addToCart({ id, name, price, image, size });
+});
+
+/* =========================
+   Contact mailto-form
+   ========================= */
 const contactForm = document.getElementById("contactForm");
 const contactStatus = document.getElementById("contactStatus");
 
-if (contactForm) {
-  contactForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    if (!contactStatus) return;
+contactForm?.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const fd = new FormData(contactForm);
 
-    contactStatus.textContent = "Enviando...";
-    try {
-      const res = await fetch(contactForm.action, {
-        method: "POST",
-        body: new FormData(contactForm),
-        headers: { "Accept": "application/json" }
-      });
+  const name = String(fd.get("name") || "").trim();
+  const email = String(fd.get("email") || "").trim();
+  const message = String(fd.get("message") || "").trim();
 
-      if (res.ok) {
-        contactStatus.textContent = "Mensagem enviada. Vou responder em breve.";
-        contactForm.reset();
-      } else {
-        contactStatus.textContent = "Não foi possível enviar agora. Tente novamente ou use o e-mail.";
-      }
-    } catch {
-      contactStatus.textContent = "Falha de conexão. Tente novamente ou use o e-mail.";
-    }
+  const subject = `Contato - Portfólio (Necklas) - ${name}`;
+  const body = [
+    `Nome: ${name}`,
+    `E-mail: ${email}`,
+    "",
+    message,
+  ].join("\n");
+
+  const mailto =
+    `mailto:necklas.contact@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+  if (contactStatus) contactStatus.textContent = "Abrindo seu e-mail...";
+  window.location.href = mailto;
+});
+
+/* =========================
+   Timeline
+   ========================= */
+const timelineEl = document.getElementById("timelineList");
+const timeline = [
+  { date: "Agora", title: "Portfólio no ar", desc: "Manter atualizado e transformar ideias em entregas reais." },
+  { date: "Semanas", title: "Mini-projetos JS", desc: "To-do + jogo + projetos pequenos para ganhar base." },
+  { date: "Curto prazo", title: "Aether Shift — Drop 01", desc: "Validar direção, fechar detalhes e estruturar execução." },
+  { date: "Médio prazo", title: "Mizuryu", desc: "Identidade e estrutura do projeto do time." },
+];
+
+function renderTimeline() {
+  if (!timelineEl) return;
+  timelineEl.innerHTML = "";
+  timeline.forEach((t) => {
+    const item = document.createElement("div");
+    item.className = "t-item";
+    item.innerHTML = `
+      <div class="t-top">
+        <h3 class="t-title">${t.title}</h3>
+        <span class="t-date">${t.date}</span>
+      </div>
+      <p class="t-desc">${t.desc}</p>
+    `;
+    timelineEl.appendChild(item);
   });
 }
 
-// ===== Theme toggle (dark/light) =====
-const themeBtn = document.getElementById("themeToggle");
-const THEME_KEY = "necklas_theme_v1";
-
-function setTheme(theme) {
-  document.documentElement.setAttribute("data-theme", theme);
-
-  // atualiza meta theme-color (barra do mobile)
-  const metaTheme = document.querySelector('meta[name="theme-color"]');
-  if (metaTheme) metaTheme.setAttribute("content", theme === "light" ? "#f6f7fb" : "#0b1220");
-
-  // UI do botão
-  if (themeBtn) themeBtn.setAttribute("aria-pressed", String(theme === "light"));
-}
-
-function getPreferredTheme() {
-  const saved = localStorage.getItem(THEME_KEY);
-  if (saved === "light" || saved === "dark") return saved;
-
-  const prefersLight = window.matchMedia?.("(prefers-color-scheme: light)")?.matches;
-  return prefersLight ? "light" : "dark";
-}
-
-// init
-setTheme(getPreferredTheme());
-
-// click
-themeBtn?.addEventListener("click", () => {
-  const current = document.documentElement.getAttribute("data-theme") || "dark";
-  const next = current === "dark" ? "light" : "dark";
-  localStorage.setItem(THEME_KEY, next);
-  setTheme(next);
-});
-
-// =====================
-// Init
-// =====================
+/* Init */
 applyUrlState();
 renderFilters();
 renderGallery();
@@ -1020,4 +879,7 @@ setupModalEvents();
 renderTimeline();
 syncUrl();
 updateCartUI();
-initCoverflowsInside(document);
+
+addFormEl?.addEventListener("submit", onAddFormSubmit);
+exportBtn?.addEventListener("click", exportJSON);
+clearBtn?.addEventListener("click", clearCustomItems);
