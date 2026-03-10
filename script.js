@@ -1,11 +1,7 @@
-/* =========================
-   script.js (projetos + tema + contraste ok)
-   ========================= */
-
 const yearEl = document.getElementById("year");
 if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
-/* Menu mobile */
+// Menu mobile
 const menuBtn = document.getElementById("menuBtn");
 const menu = document.getElementById("menu");
 if (menuBtn && menu) {
@@ -22,7 +18,7 @@ if (menuBtn && menu) {
   });
 }
 
-/* Helpers */
+// Helpers
 function slugify(str) {
   return String(str).toLowerCase().trim().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").slice(0, 60);
 }
@@ -33,6 +29,7 @@ function loadJSON(key, fallback) {
   return safeJSONParse(raw, fallback);
 }
 function saveJSON(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
+
 function fileToDataUrl(file) {
   return new Promise((resolve, reject) => {
     const r = new FileReader();
@@ -41,6 +38,7 @@ function fileToDataUrl(file) {
     r.readAsDataURL(file);
   });
 }
+
 function svgPlaceholder(title, subtitle = "Sem imagem") {
   const safeTitle = String(title).replace(/[<>&"]/g, "");
   const safeSub = String(subtitle).replace(/[<>&"]/g, "");
@@ -58,11 +56,11 @@ function svgPlaceholder(title, subtitle = "Sem imagem") {
   return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
 }
 
-/* Theme */
+// Theme
 (() => {
   const themeBtn = document.getElementById("themeToggle");
   const themeStateEl = document.getElementById("themeState");
-  const THEME_KEY = "necklas_theme_v2";
+  const THEME_KEY = "necklas_theme_v3";
   const mqLight = window.matchMedia?.("(prefers-color-scheme: light)");
 
   function applyTheme(theme) {
@@ -94,9 +92,9 @@ function svgPlaceholder(title, subtitle = "Sem imagem") {
   });
 })();
 
-/* Favorites + Gallery PRO */
-const STORAGE_KEY = "necklas_gallery_items_v3";
-const FAV_KEY = "necklas_favs_v2";
+// Favorites + Gallery PRO
+const STORAGE_KEY = "necklas_gallery_items_v4";
+const FAV_KEY = "necklas_favs_v3";
 
 let favorites = new Set(loadJSON(FAV_KEY, []));
 function saveFavs() { saveJSON(FAV_KEY, [...favorites]); }
@@ -107,18 +105,45 @@ let customItems = loadJSON(STORAGE_KEY, []);
 if (!Array.isArray(customItems)) customItems = [];
 
 const baseItems = [
-  { id:"finance-app", title:"Gerenciador de despesas (site)", category:"Tech", status:"Teste público", date:"2026", createdAt: 20,
-    image: svgPlaceholder("Finanças", "Gerenciador de despesas"),
-    description:"Site para gerenciamento de despesas, finanças e organização (público, em testes).",
-    bullets:["Organização e controle financeiro.","Fase de testes aberta ao público."],
-    links: [{label:"Acessar", url:"DEMO_DESPESAS_URL"}],
+  {
+    id:"webfinanc",
+    title:"WebFinanc — Gerenciador de despesas",
+    category:"Tech",
+    status:"Beta (testes)",
+    date:"2026",
+    createdAt: 200,
+    image: svgPlaceholder("WebFinanc", "Finanças • Organização"),
+    description:"Site para gerenciamento de despesas, finanças e organização. Público em fase de testes.",
+    bullets:[
+      "Gerenciamento de despesas e organização financeira.",
+      "Disponível ao público (beta)."
+    ],
+    links:[
+      {label:"Acessar", url:"https://webfinanc.netlify.app/"},
+      {label:"GitHub", url:"https://github.com/NecklazTheOffice"}
+    ],
     custom:false
   },
-  { id:"discord-rpg-bot", title:"Bot de RPG (Discord)", category:"Tech", status:"Em desenvolvimento", date:"2026", createdAt: 19,
+  {
+    id:"discord-rpg-bot",
+    title:"Bot de RPG — Discord",
+    category:"Tech",
+    status:"Em andamento (público)",
+    date:"2026",
+    createdAt: 199,
     image: svgPlaceholder("Discord Bot", "RPG • mecânicas novas"),
-    description:"Bot com estrutura nova e mecânicas novas. Em desenvolvimento.",
-    bullets:["Arquitetura nova.","Sistema em evolução (balanceamento/execução)."],
-    links: [{label:"Código", url:"CODIGO_BOT_URL"}],
+    description:"Bot com estrutura nova e novas mecânicas. Em andamento, disponível ao público por enquanto.",
+    bullets:[
+      "Estrutura nova para crescer com consistência.",
+      "Mecânicas em evolução."
+    ],
+    links:[
+      {
+        label:"Adicionar no Discord",
+        url:"https://discord.com/oauth2/authorize?client_id=1480627344074080427&permissions=84992&integration_type=0&scope=bot+applications.commands"
+      },
+      {label:"GitHub", url:"https://github.com/NecklazTheOffice"}
+    ],
     custom:false
   },
 
@@ -146,6 +171,7 @@ const baseItems = [
     bullets:["Narrativa visual do drop."],
     links:[], custom:false
   },
+
   { id:"mizuryu-conceito", title:"Mizuryu — conceito", category:"Mizuryu", status:"Conceito", date:"Futuro", createdAt: 6,
     image: svgPlaceholder("Mizuryu", "Vôlei • disciplina"),
     description:"Projeto de time de vôlei conectado ao ecossistema.",
@@ -244,9 +270,6 @@ function getFilteredItems(){
 }
 
 function renderGallery(){
-  const wrap = document.getElementById("aetherStoryWrap");
-  if (wrap) wrap.hidden = state.filter !== "Aether Shift";
-
   if (!galleryEl) return;
   const items = getFilteredItems();
   galleryEl.innerHTML = "";
@@ -581,8 +604,8 @@ contactForm?.addEventListener("submit",(e)=>{
 /* Timeline */
 const timelineEl=document.getElementById("timelineList");
 const timeline=[
-  {date:"Agora", title:"Finanças — site público (testes)", desc:"Gerenciador de despesas e organização já disponível ao público."},
-  {date:"Agora", title:"Discord RPG Bot", desc:"Nova estrutura e novas mecânicas em desenvolvimento."},
+  {date:"Agora", title:"WebFinanc (beta público)", desc:"Gerenciador de despesas e organização disponível ao público em fase de testes."},
+  {date:"Agora", title:"Bot de RPG (Discord)", desc:"Estrutura nova e novas mecânicas. Em andamento, público por enquanto."},
   {date:"Curto prazo", title:"Aether Shift — Drop 01", desc:"Validar direção, fechar detalhes e estruturar execução."},
 ];
 function renderTimeline(){
