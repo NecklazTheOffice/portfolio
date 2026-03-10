@@ -112,7 +112,7 @@ const baseItems = [
     status:"Beta (testes)",
     date:"2026",
     createdAt: 200,
-    image: svgPlaceholder("WebFinanc", "Finanças • Organização"),
+    image: "assets/webfinanc.jpg",
     description:"Site para gerenciamento de despesas, finanças e organização. Público em fase de testes.",
     bullets:[
       "Gerenciamento de despesas e organização financeira.",
@@ -131,7 +131,7 @@ const baseItems = [
     status:"Em andamento (público)",
     date:"2026",
     createdAt: 199,
-    image: svgPlaceholder("Discord Bot", "RPG • mecânicas novas"),
+    image: "assets/bot.jpg",
     description:"Bot com estrutura nova e novas mecânicas. Em andamento, disponível ao público por enquanto.",
     bullets:[
       "Estrutura nova para crescer com consistência.",
@@ -173,7 +173,7 @@ const baseItems = [
   },
 
   { id:"mizuryu-conceito", title:"Mizuryu — conceito", category:"Mizuryu", status:"Conceito", date:"Futuro", createdAt: 6,
-    image: svgPlaceholder("Mizuryu", "Vôlei • disciplina"),
+    image: "assets/mizuryu.jpg",
     description:"Projeto de time de vôlei conectado ao ecossistema.",
     bullets:["Dragão = poder.","Água = adaptação."],
     links:[], custom:false

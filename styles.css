@@ -521,3 +521,13 @@ html[data-theme="light"] .footer{background:rgba(0,0,0,.03)}
   .coverflow-item{--step:190px;top:14px}
   .coverflow-item img{height:220px}
 }
+
+.project-shot{
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  object-fit: cover;
+  aspect-ratio: 16 / 9;
+}
