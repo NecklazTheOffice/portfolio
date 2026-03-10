@@ -1,8 +1,7 @@
 /* =========================
-   Necklas Portfolio - script.js (final)
+   script.js (projetos + tema + contraste ok)
    ========================= */
 
-/* Base */
 const yearEl = document.getElementById("year");
 if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
@@ -27,10 +26,6 @@ if (menuBtn && menu) {
 function slugify(str) {
   return String(str).toLowerCase().trim().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").slice(0, 60);
 }
-function moneyBRL(n) {
-  try { return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(n); }
-  catch { return `R$ ${Number(n).toFixed(2)}`; }
-}
 function safeJSONParse(raw, fallback) { try { return JSON.parse(raw) ?? fallback; } catch { return fallback; } }
 function loadJSON(key, fallback) {
   const raw = localStorage.getItem(key);
@@ -38,6 +33,14 @@ function loadJSON(key, fallback) {
   return safeJSONParse(raw, fallback);
 }
 function saveJSON(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onerror = reject;
+    r.onload = () => resolve(String(r.result));
+    r.readAsDataURL(file);
+  });
+}
 function svgPlaceholder(title, subtitle = "Sem imagem") {
   const safeTitle = String(title).replace(/[<>&"]/g, "");
   const safeSub = String(subtitle).replace(/[<>&"]/g, "");
@@ -54,22 +57,12 @@ function svgPlaceholder(title, subtitle = "Sem imagem") {
   </svg>`;
   return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
 }
-function fileToDataUrl(file) {
-  return new Promise((resolve, reject) => {
-    const r = new FileReader();
-    r.onerror = reject;
-    r.onload = () => resolve(String(r.result));
-    r.readAsDataURL(file);
-  });
-}
 
-/* =========================
-   Theme (isolated)
-   ========================= */
+/* Theme */
 (() => {
   const themeBtn = document.getElementById("themeToggle");
   const themeStateEl = document.getElementById("themeState");
-  const THEME_KEY = "necklas_theme_v1";
+  const THEME_KEY = "necklas_theme_v2";
   const mqLight = window.matchMedia?.("(prefers-color-scheme: light)");
 
   function applyTheme(theme) {
@@ -101,11 +94,9 @@ function fileToDataUrl(file) {
   });
 })();
 
-/* =========================
-   Favorites + Gallery PRO
-   ========================= */
-const STORAGE_KEY = "necklas_gallery_items_v2";
-const FAV_KEY = "necklas_favs_v1";
+/* Favorites + Gallery PRO */
+const STORAGE_KEY = "necklas_gallery_items_v3";
+const FAV_KEY = "necklas_favs_v2";
 
 let favorites = new Set(loadJSON(FAV_KEY, []));
 function saveFavs() { saveJSON(FAV_KEY, [...favorites]); }
@@ -116,100 +107,54 @@ let customItems = loadJSON(STORAGE_KEY, []);
 if (!Array.isArray(customItems)) customItems = [];
 
 const baseItems = [
-  {
-    id: "aether-shift-logo-sa",
-    title: "Aether Shift — Logo (SA)",
-    category: "Aether Shift",
-    status: "Identidade",
-    date: "2026",
-    createdAt: 10,
-    image: "assets/aether-shift-logo-sa.jpg",
-    description: "Monograma principal (SA). Minimalismo premium e assinatura da marca.",
-    bullets: ["Aplicação premium: bordado pequeno/peito/etiqueta/boné.", "Reconhecimento sem poluição visual."],
-    links: [],
-    custom: false,
+  { id:"finance-app", title:"Gerenciador de despesas (site)", category:"Tech", status:"Teste público", date:"2026", createdAt: 20,
+    image: svgPlaceholder("Finanças", "Gerenciador de despesas"),
+    description:"Site para gerenciamento de despesas, finanças e organização (público, em testes).",
+    bullets:["Organização e controle financeiro.","Fase de testes aberta ao público."],
+    links: [{label:"Acessar", url:"DEMO_DESPESAS_URL"}],
+    custom:false
   },
-  {
-    id: "aether-shift-wordmark",
-    title: "Aether Shift — Wordmark",
-    category: "Aether Shift",
-    status: "Identidade",
-    date: "2026",
-    createdAt: 9,
-    image: "assets/aether-shift-wordmark.jpg",
-    description: "Nome da marca para reforço oficial (campanha, embalagem, assinatura).",
-    bullets: ["Reforça marca quando o símbolo não basta.", "Base de consistência no digital."],
-    links: [],
-    custom: false,
+  { id:"discord-rpg-bot", title:"Bot de RPG (Discord)", category:"Tech", status:"Em desenvolvimento", date:"2026", createdAt: 19,
+    image: svgPlaceholder("Discord Bot", "RPG • mecânicas novas"),
+    description:"Bot com estrutura nova e mecânicas novas. Em desenvolvimento.",
+    bullets:["Arquitetura nova.","Sistema em evolução (balanceamento/execução)."],
+    links: [{label:"Código", url:"CODIGO_BOT_URL"}],
+    custom:false
   },
-  {
-    id: "aether-shift-tee-mockups",
-    title: "Aether Shift — Camiseta (mockups)",
-    category: "Aether Shift",
-    status: "Mockup",
-    date: "2026",
-    createdAt: 8,
-    image: "assets/aether-shift-tee-mockups.jpg",
-    description: "Camiseta base do Drop 01 com variações (minimal/destaque).",
-    bullets: ["Uniforme do construtor: simples e forte.", "Define assinatura visual da marca."],
-    links: [],
-    custom: false,
+
+  { id:"aether-shift-tee-mockups", title:"Aether Shift — Camiseta (mockups)", category:"Aether Shift", status:"Mockup", date:"2026", createdAt: 10,
+    image:"assets/aether-shift-tee-mockups.jpg",
+    description:"Camiseta base do Drop 01 com variações (minimal/destaque).",
+    bullets:["Uniforme do construtor.","Define assinatura visual."],
+    links:[], custom:false
   },
-  {
-    id: "aether-shift-hoodie-mockups",
-    title: "Aether Shift — Moletom (mockups)",
-    category: "Aether Shift",
-    status: "Mockup",
-    date: "2026",
-    createdAt: 7,
-    image: "assets/aether-shift-hoodie-mockups.jpg",
-    description: "Direção do Drop 01: clean com SA e wordmark estratégico.",
-    bullets: ["Peça-chave do drop (presença).", "Marca bem posicionada, sem exagero."],
-    links: [],
-    custom: false,
+  { id:"aether-shift-hoodie-mockups", title:"Aether Shift — Moletom (mockups)", category:"Aether Shift", status:"Mockup", date:"2026", createdAt: 9,
+    image:"assets/aether-shift-hoodie-mockups.jpg",
+    description:"Direção do Drop 01: clean com SA e wordmark estratégico.",
+    bullets:["Peça-chave do drop.","Marca sem exagero."],
+    links:[], custom:false
   },
-  {
-    id: "aether-shift-cap",
-    title: "Aether Shift — Boné (mockup)",
-    category: "Aether Shift",
-    status: "Mockup",
-    date: "2026",
-    createdAt: 6,
-    image: "assets/aether-shift-cap.jpg",
-    description: "Assinatura discreta: SA na frente + nome em pontos secundários.",
-    bullets: ["Minimalista e reconhecível.", "Peça de presença no dia a dia."],
-    links: [],
-    custom: false,
+  { id:"aether-shift-cap", title:"Aether Shift — Boné (mockup)", category:"Aether Shift", status:"Mockup", date:"2026", createdAt: 8,
+    image:"assets/aether-shift-cap.jpg",
+    description:"Assinatura discreta: SA na frente + nome em pontos secundários.",
+    bullets:["Minimalista e reconhecível."],
+    links:[], custom:false
   },
-  {
-    id: "aether-shift-backprint",
-    title: "Aether Shift — Costas (mockup)",
-    category: "Aether Shift",
-    status: "Mockup",
-    date: "2026",
-    createdAt: 5,
-    image: "assets/aether-shift-backprint.jpg",
-    description: "Story piece: frente limpa, costas comunicam (narrativa do drop).",
-    bullets: ["Perfeita para campanha/foto.", "Cria conversa e storytelling."],
-    links: [],
-    custom: false,
+  { id:"aether-shift-backprint", title:"Aether Shift — Costas (mockup)", category:"Aether Shift", status:"Mockup", date:"2026", createdAt: 7,
+    image:"assets/aether-shift-backprint.jpg",
+    description:"Story piece: frente limpa, costas comunicam.",
+    bullets:["Narrativa visual do drop."],
+    links:[], custom:false
   },
-  {
-    id: "mizuryu-conceito",
-    title: "Mizuryu — Dragão da Água (conceito)",
-    category: "Mizuryu",
-    status: "Conceito",
-    date: "Futuro",
-    createdAt: 4,
-    image: svgPlaceholder("Mizuryu", "Time • disciplina • evolução"),
-    description: "Projeto de time de vôlei conectado ao ecossistema.",
-    bullets: ["Dragão = poder e ambição.", "Água = adaptação e movimento."],
-    links: [{ label: "Contato", url: "mailto:necklas.contact@gmail.com?subject=Mizuryu%20-%20Contato" }],
-    custom: false,
+  { id:"mizuryu-conceito", title:"Mizuryu — conceito", category:"Mizuryu", status:"Conceito", date:"Futuro", createdAt: 6,
+    image: svgPlaceholder("Mizuryu", "Vôlei • disciplina"),
+    description:"Projeto de time de vôlei conectado ao ecossistema.",
+    bullets:["Dragão = poder.","Água = adaptação."],
+    links:[], custom:false
   },
 ];
 
-const state = { filter: "Todos", search: "", sort: "featured", favoritesOnly: false };
+const state = { filter:"Todos", search:"", sort:"featured", favoritesOnly:false };
 
 const galleryEl = document.getElementById("gallery");
 const filterBarEl = document.getElementById("filterBar");
@@ -222,7 +167,6 @@ const addFormEl = document.getElementById("addForm");
 const exportBtn = document.getElementById("exportBtn");
 const clearBtn = document.getElementById("clearBtn");
 
-/* Modal */
 const modalEl = document.getElementById("modal");
 const modalImgEl = document.getElementById("modalImg");
 const modalMetaEl = document.getElementById("modalMeta");
@@ -232,96 +176,83 @@ const modalListEl = document.getElementById("modalList");
 const modalLinksEl = document.getElementById("modalLinks");
 const modalAdminEl = document.getElementById("modalAdmin");
 
-function applyUrlState() {
+function applyUrlState(){
   const url = new URL(location.href);
   const f = url.searchParams.get("filter");
   const q = url.searchParams.get("q");
   const s = url.searchParams.get("sort");
   const fav = url.searchParams.get("fav");
-
   if (f) state.filter = f;
   if (q) state.search = q;
   if (s) state.sort = s;
   if (fav === "1") state.favoritesOnly = true;
-
   if (searchInputEl) searchInputEl.value = state.search;
   if (sortSelectEl) sortSelectEl.value = state.sort;
   if (favoritesToggleEl) favoritesToggleEl.setAttribute("aria-pressed", String(state.favoritesOnly));
 }
-
-function syncUrl() {
+function syncUrl(){
   const url = new URL(location.href);
-
   state.filter !== "Todos" ? url.searchParams.set("filter", state.filter) : url.searchParams.delete("filter");
   state.search ? url.searchParams.set("q", state.search) : url.searchParams.delete("q");
   state.sort !== "featured" ? url.searchParams.set("sort", state.sort) : url.searchParams.delete("sort");
-  state.favoritesOnly ? url.searchParams.set("fav", "1") : url.searchParams.delete("fav");
-
-  history.replaceState(null, "", url);
+  state.favoritesOnly ? url.searchParams.set("fav","1") : url.searchParams.delete("fav");
+  history.replaceState(null,"",url);
 }
 
-function allItems() { return [...baseItems, ...customItems]; }
+function allItems(){ return [...baseItems, ...customItems]; }
 
-function getCategories() {
+function getCategories(){
   const cats = Array.from(new Set(allItems().map(i => i.category)));
   return ["Todos", ...cats];
 }
 
-function renderFilters() {
+function renderFilters(){
   if (!filterBarEl) return;
-  const categories = getCategories();
   filterBarEl.innerHTML = "";
-
-  categories.forEach((cat) => {
-    const btn = document.createElement("button");
-    btn.className = "filter-btn";
-    btn.type = "button";
-    btn.textContent = cat;
-    btn.setAttribute("aria-pressed", String(cat === state.filter));
-    btn.addEventListener("click", () => {
+  getCategories().forEach((cat) => {
+    const b = document.createElement("button");
+    b.className = "filter-btn";
+    b.type = "button";
+    b.textContent = cat;
+    b.setAttribute("aria-pressed", String(cat === state.filter));
+    b.addEventListener("click", () => {
       state.filter = cat;
       renderFilters();
       renderGallery();
       syncUrl();
     });
-    filterBarEl.appendChild(btn);
+    filterBarEl.appendChild(b);
   });
 }
 
-function matchesSearch(item, query) {
+function matchesSearch(item, query){
   const q = query.toLowerCase();
-  return [item.title, item.description, item.category, item.status, item.date]
-    .some(v => String(v || "").toLowerCase().includes(q));
+  return [item.title,item.description,item.category,item.status,item.date]
+    .some(v => String(v||"").toLowerCase().includes(q));
 }
 
-function getFilteredItems() {
+function getFilteredItems(){
   let items = allItems();
   if (state.filter !== "Todos") items = items.filter(i => i.category === state.filter);
   if (state.favoritesOnly) items = items.filter(i => isFav(i.id));
   if (state.search) items = items.filter(i => matchesSearch(i, state.search));
 
-  if (state.sort === "newest") items = [...items].sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
-  if (state.sort === "titleAsc") items = [...items].sort((a,b) => a.title.localeCompare(b.title));
-  if (state.sort === "titleDesc") items = [...items].sort((a,b) => b.title.localeCompare(a.title));
+  if (state.sort === "newest") items = [...items].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  if (state.sort === "titleAsc") items = [...items].sort((a,b)=>a.title.localeCompare(b.title));
+  if (state.sort === "titleDesc") items = [...items].sort((a,b)=>b.title.localeCompare(a.title));
   return items;
 }
 
-function updateExploreCoverflowVisibility() {
+function renderGallery(){
   const wrap = document.getElementById("aetherStoryWrap");
-  if (!wrap) return;
-  wrap.hidden = state.filter !== "Aether Shift";
-}
-
-function renderGallery() {
-  updateExploreCoverflowVisibility();
+  if (wrap) wrap.hidden = state.filter !== "Aether Shift";
 
   if (!galleryEl) return;
-
-  const filtered = getFilteredItems();
+  const items = getFilteredItems();
   galleryEl.innerHTML = "";
-  if (counterEl) counterEl.textContent = `${filtered.length} item(ns)`;
+  if (counterEl) counterEl.textContent = `${items.length} item(ns)`;
 
-  filtered.forEach((item) => {
+  items.forEach((item) => {
     const btn = document.createElement("button");
     btn.className = "gallery-card";
     btn.type = "button";
@@ -348,519 +279,319 @@ function renderGallery() {
     desc.style.margin = "0";
     desc.textContent = item.description || "";
 
-    btn.append(img, title, meta, desc);
+    btn.append(img,title,meta,desc);
     btn.addEventListener("click", () => openModal(item.id));
     galleryEl.appendChild(btn);
   });
 }
 
-function openModal(itemId) {
+function openModal(id){
   if (!modalEl) return;
-  const item = allItems().find(i => i.id === itemId);
+  const item = allItems().find(i => i.id === id);
   if (!item) return;
 
   modalEl.classList.add("open");
-  modalEl.setAttribute("aria-hidden", "false");
+  modalEl.setAttribute("aria-hidden","false");
   document.body.style.overflow = "hidden";
 
   if (modalImgEl) { modalImgEl.src = item.image || svgPlaceholder(item.title); modalImgEl.alt = item.title; }
-  if (modalMetaEl) modalMetaEl.textContent = `${item.category} • ${item.status || "—"}${item.date ? " • " + item.date : ""}`;
+  if (modalMetaEl) modalMetaEl.textContent = `${item.category} • ${item.status||"—"}${item.date ? " • " + item.date : ""}`;
   if (modalTitleEl) modalTitleEl.textContent = item.title;
   if (modalDescEl) modalDescEl.textContent = item.description || "";
 
-  if (modalListEl) {
+  if (modalListEl){
     modalListEl.innerHTML = "";
-    (item.bullets || []).forEach(b => {
-      const li = document.createElement("li");
-      li.textContent = b;
-      modalListEl.appendChild(li);
+    (item.bullets||[]).forEach(b=>{
+      const li=document.createElement("li"); li.textContent=b; modalListEl.appendChild(li);
     });
   }
 
-  if (modalLinksEl) {
+  if (modalLinksEl){
     modalLinksEl.innerHTML = "";
 
     const favBtn = document.createElement("button");
-    favBtn.type = "button";
-    favBtn.className = "modal-link-btn";
-
-    const setText = () => favBtn.textContent = isFav(item.id) ? "Remover dos favoritos" : "Salvar nos favoritos";
-    setText();
-
-    favBtn.addEventListener("click", () => {
-      toggleFav(item.id);
-      setText();
-      renderGallery();
-      syncUrl();
+    favBtn.type="button";
+    favBtn.className="modal-link-btn";
+    const setTxt = ()=> favBtn.textContent = isFav(item.id) ? "Remover dos favoritos" : "Salvar nos favoritos";
+    setTxt();
+    favBtn.addEventListener("click", ()=>{
+      toggleFav(item.id); setTxt(); renderGallery(); syncUrl();
     });
-
     modalLinksEl.appendChild(favBtn);
 
-    (item.links || []).forEach((l) => {
-      const a = document.createElement("a");
-      a.className = "modal-link-btn";
-      a.href = l.url;
+    (item.links||[]).forEach(l=>{
+      const a=document.createElement("a");
+      a.className="modal-link-btn";
+      a.href=l.url;
       a.target = l.url.startsWith("http") ? "_blank" : "_self";
-      a.rel = "noreferrer";
-      a.textContent = l.label;
+      a.rel="noreferrer";
+      a.textContent=l.label;
       modalLinksEl.appendChild(a);
     });
   }
 
-  if (modalAdminEl) {
+  if (modalAdminEl){
     modalAdminEl.innerHTML = "";
-    if (item.custom) {
-      const del = document.createElement("button");
-      del.type = "button";
-      del.className = "btn btn-ghost danger";
-      del.textContent = "Excluir este item";
-      del.addEventListener("click", () => {
-        customItems = customItems.filter(x => x.id !== item.id);
+    if (item.custom){
+      const del=document.createElement("button");
+      del.type="button";
+      del.className="btn btn-ghost danger";
+      del.textContent="Excluir este item";
+      del.addEventListener("click", ()=>{
+        customItems = customItems.filter(x=>x.id!==item.id);
         saveJSON(STORAGE_KEY, customItems);
         closeModal();
-        renderFilters();
-        renderGallery();
-        syncUrl();
+        renderFilters(); renderGallery(); syncUrl();
       });
       modalAdminEl.appendChild(del);
     }
   }
 }
 
-function closeModal() {
+function closeModal(){
   if (!modalEl) return;
   modalEl.classList.remove("open");
-  modalEl.setAttribute("aria-hidden", "true");
+  modalEl.setAttribute("aria-hidden","true");
   document.body.style.overflow = "";
 }
-
-function setupModalEvents() {
+function setupModalEvents(){
   if (!modalEl) return;
-  modalEl.addEventListener("click", (e) => {
-    const t = e.target;
+  modalEl.addEventListener("click",(e)=>{
+    const t=e.target;
     if (t && t.hasAttribute("data-close")) closeModal();
   });
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && modalEl.classList.contains("open")) closeModal();
+  document.addEventListener("keydown",(e)=>{
+    if (e.key==="Escape" && modalEl.classList.contains("open")) closeModal();
   });
 }
 
-async function onAddFormSubmit(e) {
+/* Upload */
+async function onAddFormSubmit(e){
   e.preventDefault();
   if (!addFormEl) return;
 
-  const fd = new FormData(addFormEl);
-  const title = String(fd.get("title") || "").trim();
-  const category = String(fd.get("category") || "Outros").trim();
-  const status = String(fd.get("status") || "").trim() || "Adicionado";
-  const date = String(fd.get("date") || "").trim();
-  const description = String(fd.get("description") || "").trim();
-  const bulletsRaw = String(fd.get("bullets") || "");
-  const file = fd.get("image");
+  const fd=new FormData(addFormEl);
+  const title=String(fd.get("title")||"").trim();
+  const category=String(fd.get("category")||"Outros").trim();
+  const status=String(fd.get("status")||"").trim()||"Adicionado";
+  const date=String(fd.get("date")||"").trim();
+  const description=String(fd.get("description")||"").trim();
+  const bulletsRaw=String(fd.get("bullets")||"");
+  const file=fd.get("image");
 
   if (!title || !description) return;
   if (!(file instanceof File)) return;
 
-  const bullets = bulletsRaw.split("\n").map(s => s.trim()).filter(Boolean);
-  const dataUrl = await fileToDataUrl(file);
-  const id = `${slugify(category)}-${slugify(title)}-${Date.now()}`;
+  const bullets=bulletsRaw.split("\n").map(s=>s.trim()).filter(Boolean);
+  const dataUrl=await fileToDataUrl(file);
+  const id=`${slugify(category)}-${slugify(title)}-${Date.now()}`;
 
-  customItems.unshift({
-    id, title, category, status, date,
-    createdAt: Date.now(),
-    image: dataUrl,
-    description,
-    bullets,
-    links: [],
-    custom: true
-  });
-
+  customItems.unshift({ id,title,category,status,date,createdAt:Date.now(),image:dataUrl,description,bullets,links:[],custom:true });
   saveJSON(STORAGE_KEY, customItems);
   addFormEl.reset();
 
-  renderFilters();
-  renderGallery();
-  syncUrl();
+  renderFilters(); renderGallery(); syncUrl();
 }
 
-function exportJSON() {
-  const data = { exportedAt: new Date().toISOString(), items: customItems };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "necklas-galeria-export.json";
-  document.body.appendChild(a);
-  a.click(); a.remove();
+function exportJSON(){
+  const data={ exportedAt:new Date().toISOString(), items:customItems };
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url; a.download="necklas-galeria-export.json";
+  document.body.appendChild(a); a.click(); a.remove();
   URL.revokeObjectURL(url);
 }
-
-function clearCustomItems() {
-  const ok = confirm("Isso vai apagar do navegador todos os itens adicionados (upload). Continuar?");
+function clearCustomItems(){
+  const ok=confirm("Apagar itens adicionados do navegador?");
   if (!ok) return;
-  customItems = [];
-  saveJSON(STORAGE_KEY, customItems);
-  renderFilters();
-  renderGallery();
-  syncUrl();
+  customItems=[]; saveJSON(STORAGE_KEY, customItems);
+  renderFilters(); renderGallery(); syncUrl();
 }
 
-searchInputEl?.addEventListener("input", () => {
-  state.search = String(searchInputEl.value || "").trim();
+searchInputEl?.addEventListener("input",()=>{
+  state.search=String(searchInputEl.value||"").trim();
   renderGallery(); syncUrl();
 });
-sortSelectEl?.addEventListener("change", () => {
-  state.sort = String(sortSelectEl.value || "featured");
+sortSelectEl?.addEventListener("change",()=>{
+  state.sort=String(sortSelectEl.value||"featured");
   renderGallery(); syncUrl();
 });
-favoritesToggleEl?.addEventListener("click", () => {
-  state.favoritesOnly = !state.favoritesOnly;
+favoritesToggleEl?.addEventListener("click",()=>{
+  state.favoritesOnly=!state.favoritesOnly;
   favoritesToggleEl.setAttribute("aria-pressed", String(state.favoritesOnly));
   renderGallery(); syncUrl();
 });
 
 /* data-filter / data-open-item */
-document.addEventListener("click", (e) => {
-  const el = e.target instanceof Element ? e.target.closest("[data-filter], [data-open-item]") : null;
+document.addEventListener("click",(e)=>{
+  const el = e.target instanceof Element ? e.target.closest("[data-filter],[data-open-item]") : null;
   if (!el) return;
 
-  const openId = el.getAttribute("data-open-item");
-  if (openId) { openModal(openId); return; }
+  const openId=el.getAttribute("data-open-item");
+  if (openId){ openModal(openId); return; }
 
-  const filter = el.getAttribute("data-filter");
-  if (filter) {
-    state.filter = filter;
-    renderFilters();
-    renderGallery();
-    syncUrl();
+  const filter=el.getAttribute("data-filter");
+  if (filter){
+    state.filter=filter;
+    renderFilters(); renderGallery(); syncUrl();
   }
 });
 
-/* =========================
-   Coverflow
-   ========================= */
-const coverflowInitSet = new WeakSet();
-
-function initCoverflow(root) {
+/* Coverflow */
+const coverflowInitSet=new WeakSet();
+function initCoverflow(root){
   if (!root || coverflowInitSet.has(root)) return;
   coverflowInitSet.add(root);
 
-  const viewport = root.querySelector("[data-cf-viewport]");
-  const items = Array.from(viewport?.querySelectorAll(".coverflow-item") || []);
-  const dotsWrap = root.querySelector("[data-cf-dots]");
-  const prev = root.querySelector("[data-cf-prev]");
-  const next = root.querySelector("[data-cf-next]");
-  const toggleBtn = root.querySelector("[data-cf-toggle]");
+  const viewport=root.querySelector("[data-cf-viewport]");
+  const items=Array.from(viewport?.querySelectorAll(".coverflow-item")||[]);
+  const dotsWrap=root.querySelector("[data-cf-dots]");
+  const prev=root.querySelector("[data-cf-prev]");
+  const next=root.querySelector("[data-cf-next]");
+  const toggleBtn=root.querySelector("[data-cf-toggle]");
 
-  const key = root.getAttribute("data-cf-key") || "default";
-  const AUTO_KEY = `necklas_coverflow_auto_${key}_v1`;
-  const prefersReduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+  const key=root.getAttribute("data-cf-key")||"default";
+  const AUTO_KEY=`necklas_coverflow_auto_${key}_v1`;
+  const prefersReduced=window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
 
-  const fromStorage = localStorage.getItem(AUTO_KEY);
-  let autoEnabled = fromStorage !== null ? fromStorage === "1" : root.getAttribute("data-autoplay") === "true";
-  if (prefersReduced) autoEnabled = false;
+  const fromStorage=localStorage.getItem(AUTO_KEY);
+  let autoEnabled=fromStorage!==null ? fromStorage==="1" : root.getAttribute("data-autoplay")==="true";
+  if (prefersReduced) autoEnabled=false;
 
-  if (!viewport || items.length === 0) return;
+  if (!viewport || items.length===0) return;
 
-  let index = 0;
-  let timer = null;
+  let index=0;
+  let timer=null;
+  const mod=(n,m)=>((n%m)+m)%m;
 
-  const mod = (n, m) => ((n % m) + m) % m;
-
-  function shortestOffset(i) {
-    const n = items.length;
-    let off = i - index;
-    off = mod(off, n);
-    if (off > n / 2) off -= n;
+  function shortestOffset(i){
+    const n=items.length;
+    let off=i-index;
+    off=mod(off,n);
+    if (off>n/2) off-=n;
     return off;
   }
 
-  function initDots() {
+  function initDots(){
     if (!dotsWrap) return;
-    dotsWrap.innerHTML = "";
-    items.forEach((_, i) => {
-      const b = document.createElement("button");
-      b.type = "button";
-      b.className = "coverflow-dot";
-      b.addEventListener("click", () => { index = i; render(); });
+    dotsWrap.innerHTML="";
+    items.forEach((_,i)=>{
+      const b=document.createElement("button");
+      b.type="button";
+      b.className="coverflow-dot";
+      b.addEventListener("click",()=>{ index=i; render(); });
       dotsWrap.appendChild(b);
     });
   }
 
-  function render() {
-    items.forEach((el, i) => {
-      const off = shortestOffset(i);
-      const abs = Math.abs(off);
-
-      const scale = Math.max(0.78, 1 - abs * 0.12);
-      const op = Math.max(0.18, 1 - abs * 0.20);
-      const blur = Math.min(2.2, abs * 0.7);
-      const z = 50 - abs;
-
-      el.style.setProperty("--offset", off);
-      el.style.setProperty("--scale", scale);
-      el.style.setProperty("--op", op);
-      el.style.setProperty("--blur", `${blur}px`);
-      el.style.setProperty("--z", z);
-      el.classList.toggle("is-active", i === index);
+  function render(){
+    items.forEach((el,i)=>{
+      const off=shortestOffset(i);
+      const abs=Math.abs(off);
+      const scale=Math.max(0.78,1-abs*0.12);
+      const op=Math.max(0.18,1-abs*0.20);
+      const blur=Math.min(2.2,abs*0.7);
+      const z=50-abs;
+      el.style.setProperty("--offset",off);
+      el.style.setProperty("--scale",scale);
+      el.style.setProperty("--op",op);
+      el.style.setProperty("--blur",`${blur}px`);
+      el.style.setProperty("--z",z);
+      el.classList.toggle("is-active", i===index);
     });
 
-    if (dotsWrap) {
-      Array.from(dotsWrap.children).forEach((d, i) => d.classList.toggle("active", i === index));
+    if (dotsWrap){
+      Array.from(dotsWrap.children).forEach((d,i)=>d.classList.toggle("active", i===index));
     }
 
-    if (toggleBtn) {
+    if (toggleBtn){
       toggleBtn.setAttribute("aria-pressed", String(autoEnabled));
-      toggleBtn.disabled = !!prefersReduced;
-      const stateEl = toggleBtn.querySelector("[data-cf-state]");
-      if (stateEl) stateEl.textContent = autoEnabled ? "On" : "Off";
-      if (prefersReduced && stateEl) stateEl.textContent = "Off";
+      toggleBtn.disabled=!!prefersReduced;
+      const stateEl=toggleBtn.querySelector("[data-cf-state]");
+      if (stateEl) stateEl.textContent=autoEnabled ? "On" : "Off";
+      if (prefersReduced && stateEl) stateEl.textContent="Off";
     }
   }
 
-  function go(delta) { index = mod(index + delta, items.length); render(); }
+  function go(delta){ index=mod(index+delta, items.length); render(); }
 
-  function startAuto() {
+  function startAuto(){
     if (!autoEnabled) return;
     if (timer) return;
-    timer = setInterval(() => go(1), 2800);
+    timer=setInterval(()=>go(1), 2800);
   }
-
-  function stopAuto() {
+  function stopAuto(){
     if (!timer) return;
-    clearInterval(timer);
-    timer = null;
+    clearInterval(timer); timer=null;
   }
 
-  prev?.addEventListener("click", () => go(-1));
-  next?.addEventListener("click", () => go(1));
-
-  toggleBtn?.addEventListener("click", () => {
+  prev?.addEventListener("click",()=>go(-1));
+  next?.addEventListener("click",()=>go(1));
+  toggleBtn?.addEventListener("click",()=>{
     if (prefersReduced) return;
-    autoEnabled = !autoEnabled;
+    autoEnabled=!autoEnabled;
     localStorage.setItem(AUTO_KEY, autoEnabled ? "1" : "0");
     autoEnabled ? startAuto() : stopAuto();
     render();
   });
 
-  items.forEach((el, i) => {
-    el.addEventListener("click", (e) => {
-      if (i !== index) { e.preventDefault(); e.stopPropagation(); index = i; render(); return; }
-      const openId = el.getAttribute("data-open-item");
-      if (openId) { e.preventDefault(); e.stopPropagation(); openModal(openId); }
+  items.forEach((el,i)=>{
+    el.addEventListener("click",(e)=>{
+      if (i!==index){ e.preventDefault(); e.stopPropagation(); index=i; render(); return; }
+      const openId=el.getAttribute("data-open-item");
+      if (openId){ e.preventDefault(); e.stopPropagation(); openModal(openId); }
     });
   });
 
-  // drag/swipe
-  let startX = 0;
-  let dragging = false;
-  viewport.addEventListener("pointerdown", (e) => {
-    dragging = true;
-    startX = e.clientX;
-    viewport.setPointerCapture?.(e.pointerId);
-    stopAuto();
-  });
-  viewport.addEventListener("pointermove", (e) => {
+  let startX=0; let dragging=false;
+  viewport.addEventListener("pointerdown",(e)=>{ dragging=true; startX=e.clientX; viewport.setPointerCapture?.(e.pointerId); stopAuto(); });
+  viewport.addEventListener("pointermove",(e)=>{
     if (!dragging) return;
-    const dx = e.clientX - startX;
-    if (Math.abs(dx) > 55) { go(dx > 0 ? -1 : 1); startX = e.clientX; }
+    const dx=e.clientX-startX;
+    if (Math.abs(dx)>55){ go(dx>0 ? -1 : 1); startX=e.clientX; }
   });
-  viewport.addEventListener("pointerup", () => { dragging = false; startAuto(); });
-  viewport.addEventListener("pointercancel", () => { dragging = false; startAuto(); });
+  viewport.addEventListener("pointerup",()=>{ dragging=false; startAuto(); });
+  viewport.addEventListener("pointercancel",()=>{ dragging=false; startAuto(); });
 
   root.addEventListener("mouseenter", stopAuto);
   root.addEventListener("mouseleave", startAuto);
 
-  initDots();
-  render();
-  startAuto();
+  initDots(); render(); startAuto();
 }
 
 document.querySelectorAll("[data-coverflow]").forEach(initCoverflow);
 
-/* =========================
-   Cart (drawer)
-   ========================= */
-const CART_KEY = "necklas_cart_v1";
-let cart = loadJSON(CART_KEY, []);
-if (!Array.isArray(cart)) cart = [];
-
-const cartBtn = document.getElementById("cartBtn");
-const cartCountEl = document.getElementById("cartCount");
-const cartDrawer = document.getElementById("cartDrawer");
-const cartItemsEl = document.getElementById("cartItems");
-const cartTotalEl = document.getElementById("cartTotal");
-const cartClearBtn = document.getElementById("cartClearBtn");
-const cartEmailBtn = document.getElementById("cartEmailBtn");
-
-function saveCart() { saveJSON(CART_KEY, cart); }
-function cartCount() { return cart.reduce((acc, it) => acc + it.qty, 0); }
-function cartTotal() { return cart.reduce((acc, it) => acc + it.qty * it.price, 0); }
-
-function updateCartUI() {
-  if (cartCountEl) cartCountEl.textContent = String(cartCount());
-  if (!cartItemsEl || !cartTotalEl) return;
-
-  cartItemsEl.innerHTML = "";
-  if (cart.length === 0) {
-    cartItemsEl.innerHTML = `<p class="muted">Seu carrinho está vazio.</p>`;
-    cartTotalEl.textContent = moneyBRL(0);
-    return;
-  }
-
-  cart.forEach((it) => {
-    const row = document.createElement("div");
-    row.className = "cart-row";
-    row.innerHTML = `
-      <img src="${it.image}" alt="${it.name}" />
-      <div>
-        <div class="cart-row-top">
-          <strong>${it.name}</strong>
-          <span class="pill">${it.size}</span>
-        </div>
-        <div class="muted">${moneyBRL(it.price)}</div>
-        <div class="cart-row-controls">
-          <button class="carousel-btn" type="button" data-cart-dec="${it.key}">-</button>
-          <span class="muted">Qtd: <strong>${it.qty}</strong></span>
-          <button class="carousel-btn" type="button" data-cart-inc="${it.key}">+</button>
-          <button class="carousel-btn" type="button" data-cart-rm="${it.key}">Remover</button>
-        </div>
-      </div>
-    `;
-    cartItemsEl.appendChild(row);
-  });
-
-  cartTotalEl.textContent = moneyBRL(cartTotal());
-}
-
-function openCart() {
-  if (!cartDrawer) return;
-  cartDrawer.classList.add("open");
-  cartDrawer.setAttribute("aria-hidden", "false");
-  document.body.style.overflow = "hidden";
-}
-function closeCart() {
-  if (!cartDrawer) return;
-  cartDrawer.classList.remove("open");
-  cartDrawer.setAttribute("aria-hidden", "true");
-  document.body.style.overflow = "";
-}
-
-function addToCart({ id, name, price, image, size }) {
-  const key = `${id}|${size}`;
-  const existing = cart.find((x) => x.key === key);
-  if (existing) existing.qty += 1;
-  else cart.unshift({ key, id, name, price, image, size, qty: 1 });
-  saveCart();
-  updateCartUI();
-  openCart();
-}
-
-cartBtn?.addEventListener("click", openCart);
-
-cartDrawer?.addEventListener("click", (e) => {
-  const t = e.target;
-  if (!(t instanceof Element)) return;
-
-  if (t.hasAttribute("data-cart-close")) closeCart();
-
-  const inc = t.closest("[data-cart-inc]")?.getAttribute("data-cart-inc");
-  const dec = t.closest("[data-cart-dec]")?.getAttribute("data-cart-dec");
-  const rm = t.closest("[data-cart-rm]")?.getAttribute("data-cart-rm");
-
-  if (inc) { const it = cart.find((x) => x.key === inc); if (it) it.qty += 1; saveCart(); updateCartUI(); }
-  if (dec) { const it = cart.find((x) => x.key === dec); if (it) it.qty = Math.max(1, it.qty - 1); saveCart(); updateCartUI(); }
-  if (rm) { cart = cart.filter((x) => x.key !== rm); saveCart(); updateCartUI(); }
-});
-
-cartClearBtn?.addEventListener("click", () => {
-  const ok = confirm("Limpar carrinho?");
-  if (!ok) return;
-  cart = [];
-  saveCart();
-  updateCartUI();
-});
-
-cartEmailBtn?.addEventListener("click", () => {
-  if (cart.length === 0) return;
-  const lines = [
-    "Pedido (simulado) — Aether Shift",
-    "",
-    ...cart.map((it) => `- ${it.name} | Tam: ${it.size} | Qtd: ${it.qty} | ${moneyBRL(it.price)}`),
-    "",
-    `Total: ${moneyBRL(cartTotal())}`,
-    "",
-    "Obs: este pedido foi gerado pelo portfólio (checkout em breve).",
-  ];
-  const subject = "Aether Shift — Pedido (simulado)";
-  const mailto =
-    `mailto:necklas.contact@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join("\n"))}`;
-  window.location.href = mailto;
-});
-
-document.addEventListener("click", (e) => {
-  const el = e.target instanceof Element ? e.target.closest("[data-add-to-cart]") : null;
-  if (!el) return;
-
-  const id = el.getAttribute("data-id");
-  const name = el.getAttribute("data-name");
-  const price = Number(el.getAttribute("data-price") || "0");
-  const image = el.getAttribute("data-image") || svgPlaceholder("Produto");
-  if (!id || !name) return;
-
-  const sizeSel = document.querySelector(`[data-size-for="${id}"]`);
-  const size = (sizeSel && "value" in sizeSel && sizeSel.value) ? sizeSel.value : "Único";
-
-  addToCart({ id, name, price, image, size });
-});
-
-/* =========================
-   Contact mailto-form
-   ========================= */
-const contactForm = document.getElementById("contactForm");
-const contactStatus = document.getElementById("contactStatus");
-
-contactForm?.addEventListener("submit", (e) => {
+/* Contact mailto */
+const contactForm=document.getElementById("contactForm");
+const contactStatus=document.getElementById("contactStatus");
+contactForm?.addEventListener("submit",(e)=>{
   e.preventDefault();
-  const fd = new FormData(contactForm);
-
-  const name = String(fd.get("name") || "").trim();
-  const email = String(fd.get("email") || "").trim();
-  const message = String(fd.get("message") || "").trim();
-
-  const subject = `Contato - Portfólio (Necklas) - ${name}`;
-  const body = [
-    `Nome: ${name}`,
-    `E-mail: ${email}`,
-    "",
-    message,
-  ].join("\n");
-
-  const mailto =
-    `mailto:necklas.contact@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-  if (contactStatus) contactStatus.textContent = "Abrindo seu e-mail...";
-  window.location.href = mailto;
+  const fd=new FormData(contactForm);
+  const name=String(fd.get("name")||"").trim();
+  const email=String(fd.get("email")||"").trim();
+  const message=String(fd.get("message")||"").trim();
+  const subject=`Contato - Portfólio (Necklas) - ${name}`;
+  const body=[`Nome: ${name}`,`E-mail: ${email}`,"",message].join("\n");
+  const mailto=`mailto:necklas.contact@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  if (contactStatus) contactStatus.textContent="Abrindo seu e-mail...";
+  window.location.href=mailto;
 });
 
-/* =========================
-   Timeline
-   ========================= */
-const timelineEl = document.getElementById("timelineList");
-const timeline = [
-  { date: "Agora", title: "Portfólio no ar", desc: "Manter atualizado e transformar ideias em entregas reais." },
-  { date: "Semanas", title: "Mini-projetos JS", desc: "To-do + jogo + projetos pequenos para ganhar base." },
-  { date: "Curto prazo", title: "Aether Shift — Drop 01", desc: "Validar direção, fechar detalhes e estruturar execução." },
-  { date: "Médio prazo", title: "Mizuryu", desc: "Identidade e estrutura do projeto do time." },
+/* Timeline */
+const timelineEl=document.getElementById("timelineList");
+const timeline=[
+  {date:"Agora", title:"Finanças — site público (testes)", desc:"Gerenciador de despesas e organização já disponível ao público."},
+  {date:"Agora", title:"Discord RPG Bot", desc:"Nova estrutura e novas mecânicas em desenvolvimento."},
+  {date:"Curto prazo", title:"Aether Shift — Drop 01", desc:"Validar direção, fechar detalhes e estruturar execução."},
 ];
-
-function renderTimeline() {
+function renderTimeline(){
   if (!timelineEl) return;
-  timelineEl.innerHTML = "";
-  timeline.forEach((t) => {
-    const item = document.createElement("div");
-    item.className = "t-item";
-    item.innerHTML = `
+  timelineEl.innerHTML="";
+  timeline.forEach(t=>{
+    const item=document.createElement("div");
+    item.className="t-item";
+    item.innerHTML=`
       <div class="t-top">
         <h3 class="t-title">${t.title}</h3>
         <span class="t-date">${t.date}</span>
@@ -878,7 +609,6 @@ renderGallery();
 setupModalEvents();
 renderTimeline();
 syncUrl();
-updateCartUI();
 
 addFormEl?.addEventListener("submit", onAddFormSubmit);
 exportBtn?.addEventListener("click", exportJSON);
